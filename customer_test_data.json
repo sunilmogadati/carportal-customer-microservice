@@ -1,0 +1,41 @@
+[{
+  "ID": 1,
+  "NAME": "Steve",
+  "EMAIL": "steve@gmail.com",
+  "PASSWORD": "password1",
+  "PHONE_NUMBER": "202-918-2132",
+  "ACTIVE": true,
+  "ADDRESS": "DC"
+},{
+  "ID": 2,
+  "NAME": "James",
+  "EMAIL": "james@gmail.com",
+  "PASSWORD": "password2",
+  "PHONE_NUMBER": "582-282-4873",
+  "ACTIVE": false,
+  "ADDRESS": "PA"
+},{
+  "ID": 3,
+  "NAME": "Emily",
+  "EMAIL": "emily@gmail.com",
+  "PASSWORD": "password3",
+  "PHONE_NUMBER": "214-574-3268",
+  "ACTIVE": true,
+  "ADDRESS": "TX"
+},{
+  "ID": 4,
+  "NAME": "Sunil",
+  "EMAIL": "sunil@gmail.com",
+  "PASSWORD": "password4",
+  "PHONE_NUMBER": "505-637-6377",
+  "ACTIVE": true,
+  "ADDRESS": "NM"
+},{
+  "ID": 5,
+  "NAME": "Joe",
+  "EMAIL": "joe@gmail.com",
+  "PASSWORD": "password5",
+  "PHONE_NUMBER": "405-525-2777",
+  "ACTIVE": false,
+  "ADDRESS": "OK"
+}]
