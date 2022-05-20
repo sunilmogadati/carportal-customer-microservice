@@ -1,10 +1,16 @@
 package com.quintrix.carportal.customer.repository;
 
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -210,4 +216,31 @@ class Driver implements CommandLineRunner {
   }
 
 
+}
+
+@Configuration
+/*
+  NOTE: this class is only for testing.
+  TODO: delete this class and replace it with one to be used for the project.
+ */
+class SimpleMongoConfig {
+  private final String CUSTOMER_REPOSITORY_TEST_NAME = "customer_repository_test_quintrix";
+
+  // NOTE: most of this class comes from https://www.baeldung.com/spring-data-mongodb-tutorial
+
+  @Bean
+  public MongoClient mongo() {
+    ConnectionString connectionString = new ConnectionString(
+        "mongodb://localhost:27017/" + CUSTOMER_REPOSITORY_TEST_NAME);
+    MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
+        .applyConnectionString(connectionString)
+        .build();
+
+    return MongoClients.create(mongoClientSettings);
+  }
+
+  @Bean
+  public MongoTemplate mongoTemplate() throws Exception {
+    return new MongoTemplate(mongo(), CUSTOMER_REPOSITORY_TEST_NAME);
+  }
 }
