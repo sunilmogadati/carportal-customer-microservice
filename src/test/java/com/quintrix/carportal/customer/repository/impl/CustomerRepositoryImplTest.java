@@ -83,10 +83,25 @@ class CustomerRepositoryImplTest {
 
   @Test
   void save() {
+    customer1.setAddress("1234 Test Street");
+    customer1.setEmail("user1@email.com");
+    customer1.setActive(true);
+    customer1.setPassword("password123");
+    customer1.setPhoneNumber("1234567890");
+
     customer1 = underTest.save(customer1);
     Assertions.assertThat(underTest.findAll()).hasSize(1);
     Assertions.assertThat(underTest.findById(customer1.getId())).isPresent();
-    Assertions.assertThat(underTest.findById(customer1.getId()).get().getId()).isPositive();
+
+    customer1 = underTest.findById(this.customer1.getId()).get();
+    Assertions.assertThat(customer1.getId()).isPositive();
+    Assertions.assertThat(customer1.getName()).isEqualTo("Customer One");
+    Assertions.assertThat(customer1.getEmail()).isEqualTo("user1@email.com");
+    Assertions.assertThat(customer1.getAddress()).isEqualTo("1234 Test Street");
+    Assertions.assertThat(customer1.getPassword()).isEqualTo("password123");
+    Assertions.assertThat(customer1.getPhoneNumber()).isEqualTo("1234567890");
+    Assertions.assertThat(customer1.isActive()).isTrue();
+
 
     Customer customer2 = new Customer();
     customer2.setName("Customer Two");
@@ -97,7 +112,7 @@ class CustomerRepositoryImplTest {
     Assertions.assertThat(underTest.findById(customer2.getId()).get().getId()).isPositive();
 
     // checking to make sure customer 2's id was auto incremented by one compared to customer 1's id
-    Assertions.assertThat(customer1.getId()).isEqualTo(customer2.getId() - 1);
+    Assertions.assertThat(this.customer1.getId()).isEqualTo(customer2.getId() - 1);
   }
 
   @Test
