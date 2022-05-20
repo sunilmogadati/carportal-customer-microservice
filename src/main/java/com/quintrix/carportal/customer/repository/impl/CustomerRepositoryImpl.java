@@ -15,7 +15,10 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 
-
+/**
+ * The implementation for the repository layer that is responsible for interacting
+ * with the database.
+ */
 @Repository
 public class CustomerRepositoryImpl implements CustomerRepository {
   private final MongoTemplate mongoTemplate;
@@ -24,6 +27,13 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     this.mongoTemplate = mongoTemplate;
   }
 
+  /**
+   * gets customer from id
+   *
+   * @param id customer id
+   * @return An Optional that is empty is returned if there is no customer or an Optional containing
+   * the customer is returned if the customer was found in the database.
+   */
   @Override
   public Optional<Customer> findById(long id) {
     Objects.requireNonNull(id);
@@ -32,11 +42,23 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     return Optional.ofNullable(possibleCustomerFound);
   }
 
+  /**
+   * gets all customers from the database
+   *
+   * @return A list of all the customers from the database is returned.
+   */
   @Override
   public List<Customer> findAll() {
     return mongoTemplate.findAll(Customer.class);
   }
 
+  /**
+   * gets all customers from the database that has a given name;
+   * NOTE: Casing does not matter.
+   *
+   * @param name customer name
+   * @return A list of all the customers from the database that has the name given is returned.
+   */
   @Override
   public List<Customer> findAllByName(String name) {
     Objects.requireNonNull(name);
@@ -46,6 +68,13 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     return mongoTemplate.find(query, Customer.class);
   }
 
+  /**
+   * saves a customer to the database
+   *
+   * @param customer customer to be saved
+   * @return the customer saved from the database; if the customer is new the customer id will be
+   * given a value from the database.
+   */
   @Override
   public Customer save(Customer customer) {
     Objects.requireNonNull(customer);
@@ -58,6 +87,11 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     return savedCustomer;
   }
 
+  /**
+   * deletes a customer
+   *
+   * @param customer customer to be deleted
+   */
   @Override
   public void delete(Customer customer) {
     Objects.requireNonNull(customer);
@@ -65,6 +99,11 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     mongoTemplate.remove(customer);
   }
 
+  /**
+   * deletes a customer by a given customer id
+   *
+   * @param id the id of the customer to delete
+   */
   @Override
   public void deleteById(long id) {
     Objects.requireNonNull(id);
@@ -74,6 +113,11 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     mongoTemplate.findAndRemove(query, Customer.class);
   }
 
+  /**
+   * generates a sequence so that the customer id can be auto incremented
+   *
+   * @return the next number in the sequence; the sequence will begin at 1
+   */
   private long generateSequence() {
     // source: https://www.baeldung.com/spring-boot-mongodb-auto-generated-field
 
@@ -95,6 +139,10 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     return !Objects.isNull(counter) ? counter.getSeq() : 1;
   }
 
+  /**
+   *  The purpose of this class is to store a sequence so that the customer id is able to be auto
+   *  incremented.
+   */
   @Document(collection = "database_sequences")
   private static class DatabaseSequence {
     // source: https://www.baeldung.com/spring-boot-mongodb-auto-generated-field

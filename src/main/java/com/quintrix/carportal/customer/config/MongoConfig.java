@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+/**
+ * Configuration for the database that will provide a {@link MongoTemplate} instance to be used.
+ */
 @Configuration
 public class MongoConfig {
   @Value("${database.name}")

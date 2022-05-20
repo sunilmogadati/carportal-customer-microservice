@@ -27,10 +27,6 @@ class CustomerRepositoryImplTest {
   private MongoTemplate mongoTemplate;
   private Customer customer1;
 
-  @BeforeAll
-  void setUpAll() {
-    System.out.println("name: " + mongoTemplate.getDb().getName());
-  }
   @BeforeEach
   void setUp() {
     mongoTemplate.remove(new Query(), Customer.class);
@@ -100,6 +96,7 @@ class CustomerRepositoryImplTest {
     Assertions.assertThat(underTest.findById(customer2.getId())).isPresent();
     Assertions.assertThat(underTest.findById(customer2.getId()).get().getId()).isPositive();
 
+    // checking to make sure customer 2's id was auto incremented by one compared to customer 1's id
     Assertions.assertThat(customer1.getId()).isEqualTo(customer2.getId() - 1);
   }
 
