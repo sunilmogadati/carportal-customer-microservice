@@ -12,10 +12,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -30,7 +32,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
   }
 
   @Override
-  public Optional<Customer> findById(String id) {
+  public Optional<Customer> findById(long id) {
     Objects.requireNonNull(id);
 
     Customer possibleCustomerFound = mongoTemplate.findById(id, Customer.class);
@@ -43,8 +45,19 @@ public class CustomerRepositoryImpl implements CustomerRepository {
   }
 
   @Override
+  public List<Customer> findAllByName(String name) {
+    Query query = new Query();
+    query.addCriteria(Criteria.where("name").regex(name, "i"));
+    return mongoTemplate.find(query, Customer.class);
+  }
+
+  @Override
   public Customer save(Customer customer) {
     Objects.requireNonNull(customer);
+
+    if (customer.getId() < 1) {
+      customer.setId(generateSequence());
+    }
 
     Customer savedCustomer = mongoTemplate.save(customer);
     return savedCustomer;
@@ -58,12 +71,58 @@ public class CustomerRepositoryImpl implements CustomerRepository {
   }
 
   @Override
-  public void deleteById(String id) {
+  public void deleteById(long id) {
     Objects.requireNonNull(id);
 
     Query query = new Query();
-    query.addCriteria(Criteria.where("id").is(id));
+    query.addCriteria(Criteria.where("_id").is(id));
     mongoTemplate.findAndRemove(query, Customer.class);
+  }
+
+  private long generateSequence() {
+    // source: https://www.baeldung.com/spring-boot-mongodb-auto-generated-field
+
+    final String SEQUENCE_NAME = "customers_sequence";
+    final String SEQUENCE_FIELD_TO_INCREMENT = "seq";
+    final int AMOUNT_TO_INCREMENT_BY = 1;
+    final String SEQUENCE_ID_FIELD_NAME = "_id";
+
+    Query queryToFindSequence = new Query();
+
+    queryToFindSequence.addCriteria(Criteria.where(SEQUENCE_ID_FIELD_NAME).is(SEQUENCE_NAME));
+    DatabaseSequence counter = mongoTemplate.findAndModify(
+        queryToFindSequence,
+        new Update().inc(SEQUENCE_FIELD_TO_INCREMENT, AMOUNT_TO_INCREMENT_BY),
+        FindAndModifyOptions.options().returnNew(true).upsert(true),
+        DatabaseSequence.class
+    );
+
+    return !Objects.isNull(counter) ? counter.getSeq() : 1;
+  }
+
+  @Document(collection = "database_sequences")
+  private static class DatabaseSequence {
+    // source: https://www.baeldung.com/spring-boot-mongodb-auto-generated-field
+
+    @Id
+    private String id;
+    private long seq;
+
+    public String getId() {
+      return id;
+    }
+
+    public void setId(String id) {
+      this.id = id;
+    }
+
+    public long getSeq() {
+      return seq;
+    }
+
+    public void setSeq(long seq) {
+      this.seq = seq;
+    }
   }
 }
 
@@ -72,23 +131,14 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 /* TODO: this class will eventually need to be deleted and replaced with the one used for project. */
 class Customer {
   @Id
-  private String id;
-  /*
-    NOTE: I made the id a string instead of an integer so that it is easier for MongoDB to
-    automatically populate and manage it.
-   */
+  private long id;
   private String name;
-  private String email;
-  private String pass;
-  private String phone;
-  private String status;
-  private String address;
 
-  public String getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(long id) {
     this.id = id;
   }
 
@@ -98,46 +148,6 @@ class Customer {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public String getPass() {
-    return pass;
-  }
-
-  public void setPass(String pass) {
-    this.pass = pass;
-  }
-
-  public String getPhone() {
-    return phone;
-  }
-
-  public void setPhone(String phone) {
-    this.phone = phone;
-  }
-
-  public String getStatus() {
-    return status;
-  }
-
-  public void setStatus(String status) {
-    this.status = status;
-  }
-
-  public String getAddress() {
-    return address;
-  }
-
-  public void setAddress(String address) {
-    this.address = address;
   }
 }
 
@@ -152,53 +162,57 @@ class Driver implements CommandLineRunner {
     Customer customer1 = createCustomerOne();
     Customer customer2 = createCustomerTwo();
     
-    final int NUM_CUSTOMERS_IN_DB_BEFORE_STARTING = customerRepositoryImpl.findAll().size();
+    final int numCustomersInDbBeforeStarting = customerRepositoryImpl.findAll().size();
 
     customer1 = customerRepositoryImpl.save(customer1);
     System.out.println("test 1: customer 1 should be added");
-    System.out.println(customerRepositoryImpl.findAll().size() == NUM_CUSTOMERS_IN_DB_BEFORE_STARTING + 1);
-    System.out.println("test 2: customer 1 should have an id");
+    System.out.println(customerRepositoryImpl.findAll().size() == numCustomersInDbBeforeStarting + 1);
     System.out.println(customerRepositoryImpl.findById(customer1.getId()).isPresent() == true);
+    System.out.println("test 2: customer 1 should have a positive id");
+    System.out.println(customerRepositoryImpl.findById(customer1.getId()).get().getId() > 0);
 
     customer2 = customerRepositoryImpl.save(customer2);
     System.out.println("test 3: customer 2 should be added");
-    System.out.println(customerRepositoryImpl.findAll().size() == NUM_CUSTOMERS_IN_DB_BEFORE_STARTING + 2);
-    System.out.println("test 4: customer 2 should have an id");
+    System.out.println(customerRepositoryImpl.findAll().size() == numCustomersInDbBeforeStarting + 2);
     System.out.println(customerRepositoryImpl.findById(customer2.getId()).isPresent() == true);
-    System.out.println("test 5: customer 1 should be different from customer 2");
-    System.out.println(customer1.getId() != customer2.getId());
+    System.out.println("test 4: customer 2 should have a positive id");
+    System.out.println(customerRepositoryImpl.findById(customer2.getId()).get().getId() > 0);
+    System.out.println("test 5: customer 1's id should be one less than customer 2's id");
+    System.out.println(customer1.getId() + 1 == customer2.getId());
 
 
-    customer1.setAddress("3333 New Street");
+    final String CUSTOMER_1_UPDATED_NAME = "Customer One_updated";
+    customer1.setName(CUSTOMER_1_UPDATED_NAME);
     customerRepositoryImpl.save(customer1);
     System.out.println("test 6: customer 1 should be updated");
     System.out.println(
-        customerRepositoryImpl.findById(customer1.getId()).get().getAddress().equals("3333 New Street")
+        customerRepositoryImpl.findById(customer1.getId()).get().getName().equals(CUSTOMER_1_UPDATED_NAME)
     );
 
-    String customerOneId = customer1.getId();
+    long customerOneId = customer1.getId();
+
+    List<Customer> customersFoundByName = customerRepositoryImpl.findAllByName(CUSTOMER_1_UPDATED_NAME);
+    System.out.println("test 7: customer 1 should be found when searching by customer 1's name");
+    System.out.println(customersFoundByName.size() == 1);
+    System.out.println(customersFoundByName.get(0).getId() == customerOneId);
+
 
     customerRepositoryImpl.delete(customer1);
-    System.out.println("test 7: customer 1 should be deleted");
-    System.out.println(customerRepositoryImpl.findAll().size() == NUM_CUSTOMERS_IN_DB_BEFORE_STARTING + 1);
-    System.out.println("test 8: customer 1 should not be in database");
+    System.out.println("test 8: the number of customers should decrease by 1 when customer customer 1 is deleted");
+    System.out.println(customerRepositoryImpl.findAll().size() == numCustomersInDbBeforeStarting + 1);
+    System.out.println("test 9: customer 1 should not be in database after it is deleted");
     System.out.println(customerRepositoryImpl.findById(customerOneId).isPresent() == false);
-    System.out.println("test 9: customer 2 should be in database after deleting customer 1");
+    System.out.println("test 10: customer 2 should be in database after deleting customer 1");
     System.out.println(customerRepositoryImpl.findById(customer2.getId()).isPresent());
 
     customerRepositoryImpl.deleteById(customer2.getId());
-    System.out.println("test 10: customer 2 should be deleted");
-    System.out.println(customerRepositoryImpl.findAll().size() == NUM_CUSTOMERS_IN_DB_BEFORE_STARTING);
+    System.out.println("test 11: customer 2 should not be in database after it is deleted");
+    System.out.println(customerRepositoryImpl.findAll().size() == numCustomersInDbBeforeStarting);
   }
 
   private Customer createCustomerOne() {
     Customer customer = new Customer();
     customer.setName("Customer One");
-    customer.setAddress("1111 Something Street");
-    customer.setEmail("customer1@email.com");
-    customer.setPhone("1234567890");
-    customer.setPass("password123");
-    customer.setStatus("active");
 
     return customer;
   }
@@ -206,11 +220,6 @@ class Driver implements CommandLineRunner {
   private Customer createCustomerTwo() {
     Customer customer = new Customer();
     customer.setName("Customer Two");
-    customer.setAddress("2222 Else Street");
-    customer.setEmail("customer2@email.com");
-    customer.setPhone("1234567891");
-    customer.setPass("passwordabc");
-    customer.setStatus("inactive");
 
     return customer;
   }
