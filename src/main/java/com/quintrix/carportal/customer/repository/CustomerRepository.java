@@ -1,5 +1,6 @@
 package com.quintrix.carportal.customer.repository;
 
+import com.quintrix.carportal.customer.entity.Customer;
 import java.util.List;
 import java.util.Optional;
 /*

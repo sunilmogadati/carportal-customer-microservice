@@ -1,5 +1,7 @@
-package com.quintrix.carportal.customer.repository;
+package com.quintrix.carportal.customer.repository.impl;
 
+import com.quintrix.carportal.customer.entity.Customer;
+import com.quintrix.carportal.customer.repository.CustomerRepository;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -116,30 +118,5 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     public void setSeq(long seq) {
       this.seq = seq;
     }
-  }
-}
-
-@Document(collection = "customers")
-/* NOTE: This is Customer class is only for testing */
-/* TODO: this class will eventually need to be deleted and replaced with the one used for project. */
-class Customer {
-  @Id
-  private long id;
-  private String name;
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 }
