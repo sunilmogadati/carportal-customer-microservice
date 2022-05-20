@@ -1,8 +1,10 @@
 package com.quintrix.carportal.customer.service;
 
+import com.quintrix.carportal.customer.entity.Customer;
+
 public interface CustomerService {
 
-  public Customer updateCustomer(Customer customer);
+  Customer updateCustomer(Customer customer);
 
-  public String deleteCustomer(Long id);
+  String deleteCustomer(Long id);
 }
