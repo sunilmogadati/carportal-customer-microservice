@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 public class MongoConfig {
   @Value("${database.name}")
   private String CUSTOMER_REPOSITORY_NAME;
-  @Value("${database.hostWithPost}")
+  @Value("${database.hostWithPort}")
   private String CUSTOMER_DB_LOCATION;
 
 
