@@ -14,17 +14,22 @@ import org.springframework.data.mongodb.core.MongoTemplate;
  */
 @Configuration
 public class MongoConfig {
-  @Value("${database.name}")
+  @Value("${spring.data.mongodb.database}")
   private String CUSTOMER_REPOSITORY_NAME;
-  @Value("${database.hostWithPort}")
-  private String CUSTOMER_DB_LOCATION;
+  @Value("${spring.data.mongodb.host}")
+  private String CUSTOMER_DB_HOST;
+  @Value("${spring.data.mongodb.port}")
+  private String CUSTOMER_DB_PORT;
+
 
 
   // NOTE: most of this class comes from https://www.baeldung.com/spring-data-mongodb-tutorial
 
   @Bean
   public MongoClient mongo() {
-    ConnectionString connectionString = new ConnectionString(CUSTOMER_DB_LOCATION + CUSTOMER_REPOSITORY_NAME);
+    ConnectionString connectionString = new ConnectionString(
+        "mongodb://" + CUSTOMER_DB_HOST + ":" + CUSTOMER_DB_PORT + "/" + CUSTOMER_REPOSITORY_NAME
+    );
     MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
         .applyConnectionString(connectionString)
         .build();

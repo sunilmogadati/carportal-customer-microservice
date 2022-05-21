@@ -2,18 +2,10 @@ package com.quintrix.carportal.customer.repository;
 
 import com.quintrix.carportal.customer.entity.Customer;
 import java.util.List;
-import java.util.Optional;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
-public interface CustomerRepository {
-  Optional<Customer> findById(long id);
-
-  List<Customer> findAll();
-
-  List<Customer> findAllByName(String name);
-
-  Customer save(Customer customer);
-
-  void delete(Customer customer);
-
-  void deleteById(long id);
+public interface CustomerRepository extends MongoRepository<Customer, Long> {
+  @Query("{'name': {$regex: /^?0$/, $options: 'i' }}")
+  List<Customer> getAllByName(String name);
 }
