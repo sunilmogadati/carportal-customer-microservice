@@ -1,4 +1,4 @@
-package com.quintrix.carportal.exception;
+package com.quintrix.carportal.customer.exception;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
