@@ -1,4 +1,4 @@
-package com.quintrix.carportal.exception;
+package com.quintrix.carportal.customer.exception;
 
 public class Error {
 
