@@ -1,5 +1,7 @@
 package com.quintrix.carportal.customer.controller;
 
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +9,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.quintrix.carportal.customer.entity.Customer;
+import com.quintrix.carportal.customer.service.CustomerService;
 
 @RestController
 public class CustomerController {
@@ -32,7 +39,7 @@ public class CustomerController {
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/customer/{id}")
-  Customer getCustomerDetails(@PathVariable("id") Long id) {
+  public Optional<Customer> getCustomerDetails(@PathVariable("id") Long id) {
 
     logger.debug("Request: Called getCustomerById Controller {}", id);
     return customerService.getCustomerById(id);
@@ -53,7 +60,7 @@ public class CustomerController {
   }
 
   @DeleteMapping("/customer/{id}")
-  public void deleteCustomerById(@PathVariable Long id) {
+  public String deleteCustomerById(@PathVariable Long id) {
     logger.debug("Request: delete Customer with id {}", id);
     return customerService.deleteCustomer(id);
   }
