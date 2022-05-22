@@ -1,11 +1,12 @@
 package com.quintrix.carportal.customer.entity;
 
+import java.util.List;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
+@Document
 @Table(name = "CUSTOMER")
 public class Customer {
 
@@ -18,9 +19,6 @@ public class Customer {
   @Column(name = "EMAIL")
   private String email;
 
-  @Column(name = "PASSWORD")
-  private String password;
-
   @Column(name = "PHONE_NUMBER")
   private String phoneNumber;
 
@@ -29,6 +27,9 @@ public class Customer {
 
   @Column(name = "ADDRESS")
   private String address;
+
+  @Column(name = "OWNED_CARS")
+  private List<String> ownedCars;
 
   public long getId() {
     return id;
@@ -52,14 +53,6 @@ public class Customer {
 
   public void setEmail(String email) {
     this.email = email;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
   }
 
   public String getPhoneNumber() {
@@ -86,7 +79,13 @@ public class Customer {
     this.address = address;
   }
 
+  public List<String> getOwnedCars() {
+    return ownedCars;
+  }
 
+  public void setOwnedCars(List<String> ownedCars) {
+    this.ownedCars = ownedCars;
+  }
 
 }
 
