@@ -3,6 +3,7 @@ package com.quintrix.carportal.customer.repository;
 import com.quintrix.carportal.customer.entity.Customer;
 import com.quintrix.carportal.customer.entity.DatabaseSequence;
 import java.util.Arrays;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,9 +49,9 @@ class CustomerRepositoryTest {
     Assertions.assertThat(customerRepository.getAllByName("Customer One")).hasSize(1);
     // casing should not matter
     Assertions.assertThat(customerRepository.getAllByName("cUstOmer onE")).hasSize(1);
-    // should not be containing
-    Assertions.assertThat(customerRepository.getAllByName("Customer On")).isEmpty();
-    Assertions.assertThat(customerRepository.getAllByName("One")).isEmpty();
+    // containing name should work
+    Assertions.assertThat(customerRepository.getAllByName("Customer On")).hasSize(1);
+    Assertions.assertThat(customerRepository.getAllByName("one")).hasSize(1);
 
     Customer customer2 = new Customer();
     customer2.setName("Customer One");
@@ -62,6 +63,32 @@ class CustomerRepositoryTest {
 
     // should return all customers with name matching
     Assertions.assertThat(customerRepository.getAllByName("Customer One")).hasSize(2);
+  }
+
+  @Test
+  void getAllByNameShouldSortAnyMatchesInAscendingOrderCaseInsensitive() {
+    Customer customer1 = new Customer();
+    customer1.setName("Customer");
+    Customer customer2 = new Customer();
+    customer2.setName("Customer C");
+    Customer customer3 = new Customer();
+    customer3.setName("Customer d");
+    Customer customer4 = new Customer();
+    customer4.setName("Customer B");
+    Customer customer5 = new Customer();
+    customer5.setName("Customer a");
+
+    customerRepository.saveAll(Arrays.asList(customer1, customer2, customer3, customer4, customer5));
+
+    List<Customer> customers = customerRepository.getAllByName("Customer");
+
+    // should return all customers with name matching
+    Assertions.assertThat(customers).hasSize(5);
+    Assertions.assertThat(customers.get(0).getName().equals("Customer"));
+    Assertions.assertThat(customers.get(1).getName().equals("Customer a"));
+    Assertions.assertThat(customers.get(2).getName().equals("Customer B"));
+    Assertions.assertThat(customers.get(3).getName().equals("Customer C"));
+    Assertions.assertThat(customers.get(4).getName().equals("Customer d"));
   }
 
   @Test
