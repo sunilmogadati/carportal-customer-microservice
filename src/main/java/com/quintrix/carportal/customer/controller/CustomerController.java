@@ -101,7 +101,7 @@ public class CustomerController {
   /* ################### Add a customer ################## */
   @Operation(summary = "Add a customer using the provided customer's information.")
   @ApiResponse(
-      responseCode = "201",
+      responseCode = "200",
       content = @Content(
           mediaType = MediaType.APPLICATION_JSON_VALUE,
           schema = @Schema(implementation = Customer.class)
