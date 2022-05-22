@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.Query;
 import com.quintrix.carportal.customer.entity.Customer;
 
 public interface CustomerRepository extends MongoRepository<Customer, Long> {
-  @Query("{'name': {$regex: /^?0$/, $options: 'i' }}")
+  @Query(value = "{'name': {$regex: /?0/, $options: 'i' }}", sort = "{ 'name' : 1 }", collation = "en")
   List<Customer> getAllByName(String name);
 
   Customer getByName(String name);
