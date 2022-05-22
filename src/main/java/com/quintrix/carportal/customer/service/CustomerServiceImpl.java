@@ -73,6 +73,7 @@ public class CustomerServiceImpl implements CustomerService {
     existingCustomer.setPhoneNumber(customer.getPhoneNumber());
     existingCustomer.setActive(customer.isActive());
     existingCustomer.setAddress(customer.getAddress());
+    existingCustomer.setOwnedCars(customer.getOwnedCars());
     logger.debug("Updating old customer", customer);
     return repository.save(existingCustomer);
   }
