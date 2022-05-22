@@ -1,5 +1,6 @@
 package com.quintrix.carportal.customer.service;
 
+import com.quintrix.carportal.customer.exception.CustomerNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -47,7 +48,9 @@ public class CustomerServiceImpl implements CustomerService {
   @Override
   public Optional<Customer> getCustomerById(Long id) {
     logger.debug("Returning customer by Id", id);
-    return repository.findById(id);
+    return Optional.ofNullable(
+        repository.findById(id).orElseThrow(() -> new CustomerNotFoundException())
+    );
   }
 
   /*
@@ -66,7 +69,8 @@ public class CustomerServiceImpl implements CustomerService {
 
   @Override
   public Customer updateCustomer(Customer customer) {
-    Customer existingCustomer = repository.findById(customer.getId()).orElse(null);
+    Customer existingCustomer = repository.findById(customer.getId())
+        .orElseThrow(() -> new CustomerNotFoundException());
     existingCustomer.setName(customer.getName());
     existingCustomer.setEmail(customer.getEmail());
     existingCustomer.setPassword(customer.getPassword());
@@ -84,6 +88,7 @@ public class CustomerServiceImpl implements CustomerService {
   @Override
   public String deleteCustomer(Long id) {
     logger.debug("Deleting record with id", id);
+    repository.findById(id).orElseThrow(() -> new CustomerNotFoundException("customer could not be found."));
     repository.deleteById(id);
     return "deleted customer with " + id;
   }

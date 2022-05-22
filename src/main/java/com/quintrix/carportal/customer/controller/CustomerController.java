@@ -1,5 +1,6 @@
 package com.quintrix.carportal.customer.controller;
 
+import com.quintrix.carportal.customer.dto.DeleteCustomerSuccessResponse;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,7 +16,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import com.quintrix.carportal.customer.entity.Customer;
 import com.quintrix.carportal.customer.service.CustomerService;
@@ -150,15 +149,18 @@ public class CustomerController {
   @ApiResponses({
       @ApiResponse(
           responseCode = "200",
-          content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE)
+          content = @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = DeleteCustomerSuccessResponse.class)
+          )
       ),
       @ApiResponse(responseCode = "404", content = @Content())
   })
   @DeleteMapping("/customer/{id}")
-  public String deleteCustomerById(
+  public DeleteCustomerSuccessResponse deleteCustomerById(
       @Parameter(description = "The id of customer to delete") @PathVariable Long id
   ) {
     logger.debug("Request: delete Customer with id {}", id);
-    return customerService.deleteCustomer(id);
+    return new DeleteCustomerSuccessResponse(customerService.deleteCustomer(id));
   }
 }
