@@ -156,7 +156,7 @@ public class CustomerController {
   })
   @DeleteMapping("/customer/{id}")
   public String deleteCustomerById(
-      @Parameter(description = "The id customer to delete") @PathVariable Long id
+      @Parameter(description = "The id of customer to delete") @PathVariable Long id
   ) {
     logger.debug("Request: delete Customer with id {}", id);
     return customerService.deleteCustomer(id);
