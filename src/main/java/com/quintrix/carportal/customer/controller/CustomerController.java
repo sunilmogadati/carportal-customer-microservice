@@ -121,7 +121,7 @@ public class CustomerController {
 
   /*######################## Update a customer ################### */
   @Operation(
-      summary = "Update an existing customer that has the given customer id with the updated" +
+      summary = "Update an existing customer that has the given customer id with the updated " +
           "provided customer's information."
   )
   @ApiResponses({
