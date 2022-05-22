@@ -31,13 +31,13 @@ public class CustomerServiceImpl implements CustomerService {
   }
 
   /*
-   * Returns customer by name
+   * Returns customers by name
    */
 
   @Override
-  public Customer getCustomers(String name) {
+  public List<Customer> getCustomers(String name) {
     logger.debug("Retruning customer with name", name);
-    return repository.getByName(name);
+    return repository.getAllByName(name);
   }
 
   /*
