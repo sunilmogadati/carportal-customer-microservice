@@ -48,9 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
   @Override
   public Optional<Customer> getCustomerById(Long id) {
     logger.debug("Returning customer by Id", id);
-    return Optional.ofNullable(
-        repository.findById(id).orElseThrow(() -> new CustomerNotFoundException())
-    );
+    return Optional.ofNullable(getCustomerByIdOrThrowCustomerNotFoundException(id));
   }
 
   /*
@@ -69,8 +67,7 @@ public class CustomerServiceImpl implements CustomerService {
 
   @Override
   public Customer updateCustomer(Customer customer) {
-    Customer existingCustomer = repository.findById(customer.getId())
-        .orElseThrow(() -> new CustomerNotFoundException());
+    Customer existingCustomer = getCustomerByIdOrThrowCustomerNotFoundException(customer.getId());
     existingCustomer.setName(customer.getName());
     existingCustomer.setEmail(customer.getEmail());
     existingCustomer.setPassword(customer.getPassword());
@@ -88,11 +85,17 @@ public class CustomerServiceImpl implements CustomerService {
   @Override
   public String deleteCustomer(Long id) {
     logger.debug("Deleting record with id", id);
-    repository.findById(id).orElseThrow(() -> new CustomerNotFoundException("customer could not be found."));
+    getCustomerByIdOrThrowCustomerNotFoundException(id);
     repository.deleteById(id);
     return "deleted customer with " + id;
   }
 
+  private Customer getCustomerByIdOrThrowCustomerNotFoundException(Long id) {
+    return repository.findById(id).orElseThrow(() -> {
+      logger.error("Customer could not be found with id {}", id);
+      return new CustomerNotFoundException();
+    });
+  }
 
 
 }
