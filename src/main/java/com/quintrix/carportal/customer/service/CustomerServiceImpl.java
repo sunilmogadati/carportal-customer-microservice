@@ -1,6 +1,5 @@
 package com.quintrix.carportal.customer.service;
 
-import com.quintrix.carportal.customer.exception.CustomerNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -8,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.quintrix.carportal.customer.entity.Customer;
+import com.quintrix.carportal.customer.exception.CustomerNotFoundException;
 import com.quintrix.carportal.customer.repository.CustomerRepository;
 
 
@@ -70,10 +70,10 @@ public class CustomerServiceImpl implements CustomerService {
     Customer existingCustomer = getCustomerByIdOrThrowCustomerNotFoundException(customer.getId());
     existingCustomer.setName(customer.getName());
     existingCustomer.setEmail(customer.getEmail());
-    existingCustomer.setPassword(customer.getPassword());
     existingCustomer.setPhoneNumber(customer.getPhoneNumber());
     existingCustomer.setActive(customer.isActive());
     existingCustomer.setAddress(customer.getAddress());
+    existingCustomer.setOwnedCars(customer.getOwnedCars());
     logger.debug("Updating old customer", customer);
     return repository.save(existingCustomer);
   }
