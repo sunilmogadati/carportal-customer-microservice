@@ -67,7 +67,7 @@ public class CustomerController {
   )
   // Retrieves complete customer information including id.
   @RequestMapping(method = RequestMethod.GET, value = "/customer")
-  Customer getCustomers(
+  List<Customer> getCustomers(
       @Parameter(description = "The name to search for customers with")
       @RequestParam(name = "name", required = false) String name
   ) {
