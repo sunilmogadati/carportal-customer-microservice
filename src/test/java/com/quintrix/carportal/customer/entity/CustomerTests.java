@@ -48,13 +48,11 @@ class CustomerTests {
 
     Assertions.assertNotNull(customer.getId());
     Assertions.assertNull(customer.getName());
-    Assertions.assertNull(customer.getPassword());
     Assertions.assertNull(customer.getPhoneNumber());
     Assertions.assertFalse(customer.isActive());
     Assertions.assertNull(customer.getOwnedCars());
     customer.setName("Jonathan Test");
     customer.setEmail("jtest@gmail.com");
-    customer.setPassword("password12345");
     customer.setPhoneNumber("9705555555");
     customer.setActive(true);
     customer.setOwnedCars(carsOwned);
@@ -63,7 +61,6 @@ class CustomerTests {
 
     Assertions.assertNotNull(customer.getId());
     Assertions.assertNotNull(customer.getName());
-    Assertions.assertNotNull(customer.getPassword());
     Assertions.assertNotNull(customer.getPhoneNumber());
     Assertions.assertTrue(customer.isActive());
     Assertions.assertNotNull(customer.getOwnedCars());

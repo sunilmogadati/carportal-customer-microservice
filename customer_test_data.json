@@ -5,6 +5,7 @@
   "PHONE_NUMBER": "202-918-2132",
   "ACTIVE": true,
   "ADDRESS": "DC"
+  "OWNED_CARS": [ "1", "2", "3" ]
 },{
   "_id": 2,
   "NAME": "James",
@@ -12,6 +13,7 @@
   "PHONE_NUMBER": "582-282-4873",
   "ACTIVE": false,
   "ADDRESS": "PA"
+  "OWNED_CARS": [ "3", "4", "5" ]
 },{
   "_id": 3,
   "NAME": "Emily",
@@ -19,6 +21,7 @@
   "PHONE_NUMBER": "214-574-3268",
   "ACTIVE": true,
   "ADDRESS": "TX"
+  "OWNED_CARS": [ "1", "6", "8" ]
 },{
   "_id": 4,
   "NAME": "Sunil",
@@ -26,6 +29,7 @@
   "PHONE_NUMBER": "505-637-6377",
   "ACTIVE": true,
   "ADDRESS": "NM"
+  "OWNED_CARS": [ "9", "7" ]
 },{
   "_id": 5,
   "NAME": "Joe",
@@ -33,4 +37,5 @@
   "PHONE_NUMBER": "405-525-2777",
   "ACTIVE": false,
   "ADDRESS": "OK"
+  "OWNED_CARS": []
 }]
