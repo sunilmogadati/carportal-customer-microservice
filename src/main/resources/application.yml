@@ -1,1 +1,5 @@
-
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://customertest:dbcustomerpw@cluster0.nc1eg.mongodb.net/?retryWrites=true&w=majority
+      database: customer_test_quintrix

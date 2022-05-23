@@ -1,13 +1,13 @@
 package com.quintrix.carportal.customer.config;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 
 /**
  * Configuration for the database that will provide a {@link MongoTemplate} instance to be used.
@@ -16,10 +16,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 public class MongoConfig {
   @Value("${spring.data.mongodb.database}")
   private String CUSTOMER_REPOSITORY_NAME;
-  @Value("${spring.data.mongodb.host}")
-  private String CUSTOMER_DB_HOST;
-  @Value("${spring.data.mongodb.port}")
-  private String CUSTOMER_DB_PORT;
+
+  // @Value("${spring.data.mongodb.host}")
+  // private String CUSTOMER_DB_HOST;
+  // @Value("${spring.data.mongodb.port}")
+  // private String CUSTOMER_DB_PORT;
+  @Value("${spring.data.mongodb.uri}")
+  private String CUSTOMER_DB_URI;
 
 
 
@@ -28,11 +31,10 @@ public class MongoConfig {
   @Bean
   public MongoClient mongo() {
     ConnectionString connectionString = new ConnectionString(
-        "mongodb://" + CUSTOMER_DB_HOST + ":" + CUSTOMER_DB_PORT + "/" + CUSTOMER_REPOSITORY_NAME
-    );
-    MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
-        .applyConnectionString(connectionString)
-        .build();
+        // "mongodb://" + CUSTOMER_DB_HOST + ":" + CUSTOMER_DB_PORT + "/" + CUSTOMER_REPOSITORY_NAME
+        CUSTOMER_DB_URI + "/" + CUSTOMER_REPOSITORY_NAME);
+    MongoClientSettings mongoClientSettings =
+        MongoClientSettings.builder().applyConnectionString(connectionString).build();
 
     return MongoClients.create(mongoClientSettings);
   }
