@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.quintrix.carportal.customer.entity.Customer;
+import com.quintrix.carportal.customer.exception.CustomerNotFoundException;
 import com.quintrix.carportal.customer.repository.CustomerRepository;
 
 
@@ -31,13 +32,13 @@ public class CustomerServiceImpl implements CustomerService {
   }
 
   /*
-   * Returns customer by name
+   * Returns customers by name
    */
 
   @Override
-  public Customer getCustomers(String name) {
+  public List<Customer> getCustomers(String name) {
     logger.debug("Retruning customer with name", name);
-    return repository.getByName(name);
+    return repository.getAllByName(name);
   }
 
   /*
@@ -47,7 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
   @Override
   public Optional<Customer> getCustomerById(Long id) {
     logger.debug("Returning customer by Id", id);
-    return repository.findById(id);
+    return Optional.ofNullable(getCustomerByIdOrThrowCustomerNotFoundException(id));
   }
 
   /*
@@ -66,13 +67,13 @@ public class CustomerServiceImpl implements CustomerService {
 
   @Override
   public Customer updateCustomer(Customer customer) {
-    Customer existingCustomer = repository.findById(customer.getId()).orElse(null);
+    Customer existingCustomer = getCustomerByIdOrThrowCustomerNotFoundException(customer.getId());
     existingCustomer.setName(customer.getName());
     existingCustomer.setEmail(customer.getEmail());
-    existingCustomer.setPassword(customer.getPassword());
     existingCustomer.setPhoneNumber(customer.getPhoneNumber());
     existingCustomer.setActive(customer.isActive());
     existingCustomer.setAddress(customer.getAddress());
+    existingCustomer.setOwnedCars(customer.getOwnedCars());
     logger.debug("Updating old customer", customer);
     return repository.save(existingCustomer);
   }
@@ -84,10 +85,17 @@ public class CustomerServiceImpl implements CustomerService {
   @Override
   public String deleteCustomer(Long id) {
     logger.debug("Deleting record with id", id);
+    getCustomerByIdOrThrowCustomerNotFoundException(id);
     repository.deleteById(id);
     return "deleted customer with " + id;
   }
 
+  private Customer getCustomerByIdOrThrowCustomerNotFoundException(Long id) {
+    return repository.findById(id).orElseThrow(() -> {
+      logger.error("Customer could not be found with id {}", id);
+      return new CustomerNotFoundException();
+    });
+  }
 
 
 }
