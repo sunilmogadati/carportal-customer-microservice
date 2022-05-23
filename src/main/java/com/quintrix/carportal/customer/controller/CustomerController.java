@@ -57,7 +57,7 @@ public class CustomerController {
           array = @ArraySchema(schema = @Schema(implementation = Customer.class))))
   // Retrieves complete customer information including id.
   @RequestMapping(method = RequestMethod.GET, value = "/customer")
-  List<Customer> getCustomers(
+  List<ClientCustomer> getCustomers(
       @Parameter(description = "The name to search for customers with") @RequestParam(name = "name",
           required = false) String name) {
 
