@@ -1,11 +1,13 @@
 package com.quintrix.carportal.customer.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.quintrix.carportal.customer.entity.ClientCustomer;
 import com.quintrix.carportal.customer.entity.Customer;
 import com.quintrix.carportal.customer.exception.CustomerNotFoundException;
 import com.quintrix.carportal.customer.repository.CustomerRepository;
@@ -26,9 +28,11 @@ public class CustomerServiceImpl implements CustomerService {
    */
 
   @Override
-  public List<Customer> getAllCustomers() {
+  public List<ClientCustomer> getAllCustomers() {
     logger.debug("Retruning list of all customers");
-    return repository.findAll();
+    List<ClientCustomer> clientList = new ArrayList<>();
+    repository.findAll().stream().map(c -> clientList.add(new ClientCustomer(c)));
+    return clientList;
   }
 
   /*
@@ -36,9 +40,12 @@ public class CustomerServiceImpl implements CustomerService {
    */
 
   @Override
-  public List<Customer> getCustomers(String name) {
+  public List<ClientCustomer> getCustomers(String name) {
     logger.debug("Retruning customer with name", name);
-    return repository.getAllByName(name);
+    List<ClientCustomer> clientList = new ArrayList<>();
+
+    repository.getAllByName(name).stream().map(c -> clientList.add(new ClientCustomer(c)));
+    return clientList;
   }
 
   /*
