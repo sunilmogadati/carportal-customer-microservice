@@ -1,5 +1,6 @@
 package com.quintrix.carportal.customer.exception;
 
+@SuppressWarnings("serial")
 public class CustomerNotFoundException extends RuntimeException {
 
   String displayMessage;
