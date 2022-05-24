@@ -2,6 +2,7 @@ package com.quintrix.carportal.customer.service;
 
 import java.util.List;
 import java.util.Optional;
+import com.quintrix.carportal.customer.entity.ClientCustomer;
 import com.quintrix.carportal.customer.entity.Customer;
 
 public interface CustomerService {
@@ -12,7 +13,7 @@ public interface CustomerService {
 
   List<Customer> getAllCustomers();
 
-  List<Customer> getCustomers(String name);
+  List<ClientCustomer> getCustomers(String name);
 
   Optional<Customer> getCustomerById(Long id);
 
