@@ -27,8 +27,16 @@ public class CustomerServiceImpl implements CustomerService {
 
   @Override
   public List<Customer> getAllCustomers() {
-    logger.debug("Retruning list of all customers");
-    return repository.findAll();
+    List<Customer> returnList;
+    returnList = repository.findAll();
+    if (returnList.isEmpty()) {
+      logger.error("Not able to find any customers in database");
+      throw new CustomerNotFoundException("No customers in database",
+          "Please add information to the Database");
+    } else {
+      logger.debug("Retruning list of all customers");
+      return returnList;
+    }
   }
 
   /*
@@ -37,8 +45,17 @@ public class CustomerServiceImpl implements CustomerService {
 
   @Override
   public List<Customer> getCustomers(String name) {
-    logger.debug("Retruning customer with name", name);
-    return repository.getAllByName(name);
+    List<Customer> returnList;
+    returnList = repository.getAllByName(name);
+    if (returnList.isEmpty()) {
+      logger.error("Not able to find any customer with name ", name);
+      throw new CustomerNotFoundException("No customer with name " + name,
+          "Please enter an exceptiable name for search");
+    } else {
+      logger.debug("Retruning customer with name", name);
+      return returnList;
+    }
+
   }
 
   /*
@@ -57,8 +74,16 @@ public class CustomerServiceImpl implements CustomerService {
 
   @Override
   public Customer addCustomer(Customer customer) {
-    logger.debug("Adding a new customer to the database", customer);
-    return repository.save(customer);
+    Long id = customer.getId();
+    Customer newCustomer = repository.findById(id).orElse(null);
+    if (newCustomer == null) {
+      logger.debug("Adding a new customer to the database", customer);
+      return repository.save(customer);
+    } else {
+      logger.error("Id is already present", id);
+      throw new CustomerNotFoundException("Id is alredy present",
+          "If you need to update record use diffrent function");
+    }
   }
 
   /*
@@ -67,15 +92,16 @@ public class CustomerServiceImpl implements CustomerService {
 
   @Override
   public Customer updateCustomer(Customer customer) {
-    Customer existingCustomer = getCustomerByIdOrThrowCustomerNotFoundException(customer.getId());
-    existingCustomer.setName(customer.getName());
-    existingCustomer.setEmail(customer.getEmail());
-    existingCustomer.setPhoneNumber(customer.getPhoneNumber());
-    existingCustomer.setActive(customer.isActive());
-    existingCustomer.setAddress(customer.getAddress());
-    existingCustomer.setOwnedCars(customer.getOwnedCars());
-    logger.debug("Updating old customer", customer);
-    return repository.save(existingCustomer);
+    Long id = customer.getId();
+    Customer existingCustomer = repository.findById(id).orElse(null);
+    if (existingCustomer == null) {
+      logger.error("No customer with id ", id);
+      throw new CustomerNotFoundException("No customer with Id " + id,
+          "Please enter in a customer in the database to update");
+    } else {
+      logger.debug("Updating old customer", customer);
+      return repository.save(existingCustomer);
+    }
   }
 
   /*
@@ -84,10 +110,16 @@ public class CustomerServiceImpl implements CustomerService {
 
   @Override
   public String deleteCustomer(Long id) {
-    logger.debug("Deleting record with id", id);
-    getCustomerByIdOrThrowCustomerNotFoundException(id);
-    repository.deleteById(id);
-    return "deleted customer with " + id;
+    Customer existingCustomer = repository.findById(id).orElse(null);
+    if (existingCustomer == null) {
+      logger.error("No customer to delete with Id ", id);
+      throw new CustomerNotFoundException("No customer with Id " + id,
+          "Please enter in a valid ID");
+    } else {
+      logger.debug("Deleting record with id", id);
+      repository.deleteById(id);
+      return "deleted customer with " + id;
+    }
   }
 
   private Customer getCustomerByIdOrThrowCustomerNotFoundException(Long id) {
