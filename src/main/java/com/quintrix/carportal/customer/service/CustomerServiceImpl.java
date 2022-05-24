@@ -2,10 +2,12 @@ package com.quintrix.carportal.customer.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.quintrix.carportal.customer.entity.ClientCustomer;
 import com.quintrix.carportal.customer.entity.Customer;
 import com.quintrix.carportal.customer.exception.CustomerNotFoundException;
 import com.quintrix.carportal.customer.repository.CustomerRepository;
@@ -40,20 +42,29 @@ public class CustomerServiceImpl implements CustomerService {
   }
 
   /*
-   * Returns customers by name
+   * Returns client customers by name
    */
 
   @Override
-  public List<Customer> getCustomers(String name) {
-    List<Customer> returnList;
-    returnList = repository.getAllByName(name);
-    if (returnList.isEmpty()) {
+  public List<ClientCustomer> getCustomers(String name) {
+
+    List<Customer> customerList;
+    customerList = repository.getAllByName(name);
+
+    List<ClientCustomer> clientCustomerList = null;
+
+    if (customerList.isEmpty()) {
       logger.error("Not able to find any customer with name ", name);
       throw new CustomerNotFoundException("No customer with name " + name,
-          "Please enter an exceptiable name for search");
+          "Please enter an acceptiable name for search");
     } else {
       logger.debug("Retruning customer with name", name);
-      return returnList;
+
+      clientCustomerList =
+          customerList.stream().map(c -> new ClientCustomer(c.getName(), c.getEmail(),
+              c.getPhoneNumber(), c.getAddress(), c.getOwnedCars())).collect(Collectors.toList());
+
+      return clientCustomerList;
     }
 
   }
@@ -100,7 +111,7 @@ public class CustomerServiceImpl implements CustomerService {
           "Please enter in a customer in the database to update");
     } else {
       logger.debug("Updating old customer", customer);
-      return repository.save(existingCustomer);
+      return repository.save(customer);
     }
   }
 
