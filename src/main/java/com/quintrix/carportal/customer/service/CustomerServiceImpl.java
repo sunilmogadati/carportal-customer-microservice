@@ -1,8 +1,8 @@
 package com.quintrix.carportal.customer.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,40 +28,43 @@ public class CustomerServiceImpl implements CustomerService {
    */
 
   @Override
-  public List<ClientCustomer> getAllCustomers() {
+  public List<Customer> getAllCustomers() {
     List<Customer> returnList;
     returnList = repository.findAll();
-
     if (returnList.isEmpty()) {
       logger.error("Not able to find any customers in database");
       throw new CustomerNotFoundException("No customers in database",
           "Please add information to the Database");
     } else {
-      logger.debug("Returning list of all customers");
-      List<ClientCustomer> clientList = new ArrayList<>();
-      returnList.stream().map(c -> clientList.add(new ClientCustomer(c)));
-      return clientList;
+      logger.debug("Retruning list of all customers");
+      return returnList;
     }
   }
 
   /*
-   * Returns customers by name
+   * Returns client customers by name
    */
 
   @Override
   public List<ClientCustomer> getCustomers(String name) {
-    List<Customer> returnList;
-    returnList = repository.getAllByName(name);
-    if (returnList.isEmpty()) {
+
+    List<Customer> customerList;
+    customerList = repository.getAllByName(name);
+
+    List<ClientCustomer> clientCustomerList = null;
+
+    if (customerList.isEmpty()) {
       logger.error("Not able to find any customer with name ", name);
       throw new CustomerNotFoundException("No customer with name " + name,
-          "Please enter an exceptiable name for search");
+          "Please enter an acceptiable name for search");
     } else {
       logger.debug("Retruning customer with name", name);
-      List<ClientCustomer> clientList = new ArrayList<>();
 
-      returnList.stream().map(c -> clientList.add(new ClientCustomer(c)));
-      return clientList;
+      clientCustomerList =
+          customerList.stream().map(c -> new ClientCustomer(c.getName(), c.getEmail(),
+              c.getPhoneNumber(), c.getAddress(), c.getOwnedCars())).collect(Collectors.toList());
+
+      return clientCustomerList;
     }
 
   }
@@ -108,7 +111,7 @@ public class CustomerServiceImpl implements CustomerService {
           "Please enter in a customer in the database to update");
     } else {
       logger.debug("Updating old customer", customer);
-      return repository.save(existingCustomer);
+      return repository.save(customer);
     }
   }
 

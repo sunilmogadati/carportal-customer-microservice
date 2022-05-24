@@ -14,11 +14,16 @@ public class ClientCustomer {
 
   private List<String> ownedCars;
 
-  public ClientCustomer(Customer customer) {
-    name = customer.getName();
-    email = customer.getEmail();
-    phoneNumber = customer.getPhoneNumber();
-    address = customer.getAddress();
+
+
+  public ClientCustomer(String name, String email, String phoneNumber, String address,
+      List<String> ownedCars) {
+    super();
+    this.name = name;
+    this.email = email;
+    this.phoneNumber = phoneNumber;
+    this.address = address;
+    this.ownedCars = ownedCars;
   }
 
   public String getName() {
@@ -62,4 +67,3 @@ public class ClientCustomer {
   }
 
 }
-

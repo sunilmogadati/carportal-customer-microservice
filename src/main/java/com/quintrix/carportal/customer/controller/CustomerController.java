@@ -45,7 +45,7 @@ public class CustomerController {
       content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
           array = @ArraySchema(schema = @Schema(implementation = Customer.class))))
   @RequestMapping(method = RequestMethod.GET, value = "/customers")
-  List<ClientCustomer> getAllCustomers() {
+  List<Customer> getAllCustomers() {
 
     return customerService.getAllCustomers();
   }
@@ -55,7 +55,7 @@ public class CustomerController {
   @ApiResponse(responseCode = "200",
       content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
           array = @ArraySchema(schema = @Schema(implementation = Customer.class))))
-  // Retrieves complete customer information including id.
+  // Retrieves complete customer information omitting the customer id.
   @RequestMapping(method = RequestMethod.GET, value = "/customer")
   List<ClientCustomer> getCustomers(
       @Parameter(description = "The name to search for customers with") @RequestParam(name = "name",
@@ -123,4 +123,15 @@ public class CustomerController {
     logger.debug("Request: delete Customer with id {}", id);
     return new DeleteCustomerSuccessResponse(customerService.deleteCustomer(id));
   }
+
+  // Getters and Setters
+  public CustomerService getCustomerService() {
+    return customerService;
+  }
+
+  public void setCustomerService(CustomerService customerService) {
+    this.customerService = customerService;
+  }
+
+
 }
