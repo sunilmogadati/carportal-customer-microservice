@@ -1,5 +1,6 @@
 spring:
   data:
     mongodb:
-      uri: mongodb+srv://customeradmin:customerportal@cluster0.wbfea.mongodb.net/?retryWrites=true&w=majority
+      uri: mongodb+srv://customeradmin:customerportal@cluster0.wbfea.mongodb.net/?retryWrites=true
       database: customer_test_quintrix
+

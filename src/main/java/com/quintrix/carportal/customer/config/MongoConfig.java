@@ -16,11 +16,10 @@ import com.mongodb.client.MongoClients;
 public class MongoConfig {
   @Value("${spring.data.mongodb.database}")
   private String CUSTOMER_REPOSITORY_NAME;
-
-  // @Value("${spring.data.mongodb.host}")
-  // private String CUSTOMER_DB_HOST;
-  // @Value("${spring.data.mongodb.port}")
-  // private String CUSTOMER_DB_PORT;
+  /*@Value("${spring.data.mongodb.host}")
+  private String CUSTOMER_DB_HOST;
+  @Value("${spring.data.mongodb.port}")
+  private String CUSTOMER_DB_PORT;*/
   @Value("${spring.data.mongodb.uri}")
   private String CUSTOMER_DB_URI;
 
@@ -31,10 +30,11 @@ public class MongoConfig {
   @Bean
   public MongoClient mongo() {
     ConnectionString connectionString = new ConnectionString(
-        // "mongodb://" + CUSTOMER_DB_HOST + ":" + CUSTOMER_DB_PORT + "/" + CUSTOMER_REPOSITORY_NAME
+        //"mongodb://" + CUSTOMER_DB_HOST + ":" + CUSTOMER_DB_PORT + "/" + CUSTOMER_REPOSITORY_NAME
         CUSTOMER_DB_URI + "/" + CUSTOMER_REPOSITORY_NAME);
-    MongoClientSettings mongoClientSettings =
-        MongoClientSettings.builder().applyConnectionString(connectionString).build();
+    MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
+        .applyConnectionString(connectionString)
+        .build();
 
     return MongoClients.create(mongoClientSettings);
   }

@@ -1,41 +1,61 @@
 [{
   "_id": 1,
-  "NAME": "Steve",
-  "EMAIL": "steve@gmail.com",
-  "PHONE_NUMBER": "202-918-2132",
-  "ACTIVE": true,
-  "ADDRESS": "DC",
-  "OWNED_CARS": [ "1", "2", "3" ]
+  "name": "Steve",
+  "email": "steve@gmail.com",
+  "phoneNumber": "202-918-2132",
+  "active": true,
+  "address": "DC",
+  "ownedCars": [
+    "1",
+    "2",
+    "3"
+  ],
+  "_class": "com.quintrix.carportal.customer.entity.Customer"
 },{
   "_id": 2,
-  "NAME": "James",
-  "EMAIL": "james@gmail.com",
-  "PHONE_NUMBER": "582-282-4873",
-  "ACTIVE": false,
-  "ADDRESS": "PA",
-  "OWNED_CARS": [ "3", "4", "5" ]
+  "name": "James",
+  "email": "james@gmail.com",
+  "phoneNumber": "582-282-4873",
+  "active": false,
+  "address": "PA",
+  "ownedCars": [
+    "3",
+    "4",
+    "5"
+  ],
+  "_class": "com.quintrix.carportal.customer.entity.Customer"
 },{
   "_id": 3,
-  "NAME": "Emily",
-  "EMAIL": "emily@gmail.com",
-  "PHONE_NUMBER": "214-574-3268",
-  "ACTIVE": true,
-  "ADDRESS": "TX",
-  "OWNED_CARS": [ "1", "6", "8" ]
+  "name": "Emily",
+  "email": "emily@gmail.com",
+  "phoneNumber": "214-574-3268",
+  "active": true,
+  "address": "TX",
+  "ownedCars": [
+    "1",
+    "6",
+    "8"
+  ],
+  "_class": "com.quintrix.carportal.customer.entity.Customer"
 },{
   "_id": 4,
-  "NAME": "Sunil",
-  "EMAIL": "sunil@gmail.com",
-  "PHONE_NUMBER": "505-637-6377",
-  "ACTIVE": true,
-  "ADDRESS": "NM",
-  "OWNED_CARS": [ "9", "7" ]
+  "name": "Sunil",
+  "email": "sunil@gmail.com",
+  "phoneNumber": "505-637-6377",
+  "active": true,
+  "address": "NM",
+  "ownedCars": [
+    "9",
+    "7"
+  ],
+  "_class": "com.quintrix.carportal.customer.entity.Customer"
 },{
   "_id": 5,
-  "NAME": "Joe",
-  "EMAIL": "joe@gmail.com",
-  "PHONE_NUMBER": "405-525-2777",
-  "ACTIVE": false,
-  "ADDRESS": "OK",
-  "OWNED_CARS": []
+  "name": "Joe",
+  "email": "joe@gmail.com",
+  "phoneNumber": "405-525-2777",
+  "active": false,
+  "address": "OK",
+  "ownedCars": [],
+  "_class": "com.quintrix.carportal.customer.entity.Customer"
 }]
