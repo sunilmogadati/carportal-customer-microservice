@@ -14,7 +14,6 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
   @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
   protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
-    String bodyOfResponse = "This should be application specific";
 
     Error error = new Error();
     error.setCustomMessage("This came from IllegalStateException or IllegalArguementException");;
@@ -25,14 +24,12 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
   @ExceptionHandler({CustomerNotFoundException.class})
   public ResponseEntity<Object> handleException2(Exception ex, WebRequest request) {
-    HttpHeaders headers = new HttpHeaders();
 
     if (ex instanceof CustomerNotFoundException) {
-      HttpStatus status = HttpStatus.NOT_FOUND;
-      CustomerNotFoundException unfe = (CustomerNotFoundException) ex;
+
 
       Error error = new Error();
-      error.setCustomMessage("Please use a different Id");
+      error.setCustomMessage(((CustomerNotFoundException) ex).detailedMessage);
       error.setMessage(((CustomerNotFoundException) ex).displayMessage);
       error.setHttpStatusCode(HttpStatus.NOT_FOUND.value());
 
