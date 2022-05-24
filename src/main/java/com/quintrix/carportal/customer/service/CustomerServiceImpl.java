@@ -31,7 +31,7 @@ public class CustomerServiceImpl implements CustomerService {
   public List<ClientCustomer> getAllCustomers() {
     List<Customer> returnList;
     returnList = repository.findAll();
-    
+
     if (returnList.isEmpty()) {
       logger.error("Not able to find any customers in database");
       throw new CustomerNotFoundException("No customers in database",
@@ -49,7 +49,7 @@ public class CustomerServiceImpl implements CustomerService {
    */
 
   @Override
-  public List<Customer> getCustomers(String name) {
+  public List<ClientCustomer> getCustomers(String name) {
     List<Customer> returnList;
     returnList = repository.getAllByName(name);
     if (returnList.isEmpty()) {
@@ -61,7 +61,7 @@ public class CustomerServiceImpl implements CustomerService {
       List<ClientCustomer> clientList = new ArrayList<>();
 
       returnList.stream().map(c -> clientList.add(new ClientCustomer(c)));
-      return returnList;
+      return clientList;
     }
 
   }
