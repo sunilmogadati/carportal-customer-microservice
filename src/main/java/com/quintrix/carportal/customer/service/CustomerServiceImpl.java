@@ -29,12 +29,10 @@ public class CustomerServiceImpl implements CustomerService {
 
   @Override
   public List<ClientCustomer> getAllCustomers() {
-    List<Customer> returnList;
+    List<Customer> customerList;
     List<ClientCustomer> clientCustomerList;
-    returnList = getAllCustomersAdmin();
-    clientCustomerList = returnList.stream().map(c -> new ClientCustomer(c.getName(), c.getEmail(),
-        c.getPhoneNumber(), c.getAddress(), c.getOwnedCars())).collect(Collectors.toList());
-    return clientCustomerList;
+    customerList = getAllCustomersAdmin();
+    return getAClientCustomerList(customerList);
   }
 
   /*
@@ -58,25 +56,26 @@ public class CustomerServiceImpl implements CustomerService {
    */
 
   @Override
-  public List<ClientCustomer> getCustomers(String name) {
+  public <T> List<T> getCustomers(String name) {
 
-    List<Customer> customerList;
-    customerList = repository.getAllByName(name);
-
-    List<ClientCustomer> clientCustomerList = null;
-
-    if (customerList.isEmpty()) {
-      logger.error("Not able to find any customer with name ", name);
-      throw new CustomerNotFoundException("No customer with name " + name,
-          "Please enter an acceptiable name for search");
+    if (name == null) {
+      return (List<T>) getAllCustomers();
     } else {
-      logger.debug("Retruning customer with name", name);
 
-      clientCustomerList =
-          customerList.stream().map(c -> new ClientCustomer(c.getName(), c.getEmail(),
-              c.getPhoneNumber(), c.getAddress(), c.getOwnedCars())).collect(Collectors.toList());
+      List<Customer> customerList;
+      customerList = repository.getAllByName(name);
 
-      return clientCustomerList;
+      List<ClientCustomer> clientCustomerList = null;
+
+      if (customerList.isEmpty()) {
+        logger.error("Not able to find any customer with name ", name);
+        throw new CustomerNotFoundException("No customer with name " + name,
+            "Please enter an acceptiable name for search");
+      } else {
+        logger.debug("Retruning customer with name", name);
+
+        return (List<T>) getAClientCustomerList(customerList);
+      }
     }
 
   }
@@ -98,17 +97,13 @@ public class CustomerServiceImpl implements CustomerService {
   @Override
   public List<ClientCustomer> getCustomerByPhoneNumber(String phone) {
     List<Customer> customerList = repository.getByPhoneNumber(phone);
-    List<ClientCustomer> clientCustomerList;
     if (customerList.isEmpty()) {
       logger.error("No customer with Phone Number ", phone);
       throw new CustomerNotFoundException("No customer with phone number " + phone,
           "Please enter in an acceptable phone number");
     } else {
       logger.debug("Returning list of customers with phone number ", phone);
-      clientCustomerList =
-          customerList.stream().map(c -> new ClientCustomer(c.getName(), c.getEmail(),
-              c.getPhoneNumber(), c.getAddress(), c.getOwnedCars())).collect(Collectors.toList());
-      return clientCustomerList;
+      return getAClientCustomerList(customerList);
     }
   }
 
@@ -119,17 +114,13 @@ public class CustomerServiceImpl implements CustomerService {
   @Override
   public List<ClientCustomer> getCustomerByAddress(String address) {
     List<Customer> customerList = repository.getByAddress(address);
-    List<ClientCustomer> clientCustomerList;
     if (customerList.isEmpty()) {
       logger.error("No customer with address ", address);
       throw new CustomerNotFoundException("No customer with address " + address,
           "Please enter in an acceptable address");
     } else {
       logger.debug("Returing list of ClientCustomers with address ", address);
-      clientCustomerList =
-          customerList.stream().map(c -> new ClientCustomer(c.getName(), c.getEmail(),
-              c.getPhoneNumber(), c.getAddress(), c.getOwnedCars())).collect(Collectors.toList());
-      return clientCustomerList;
+      return getAClientCustomerList(customerList);
     }
   }
 
@@ -148,17 +139,13 @@ public class CustomerServiceImpl implements CustomerService {
   @Override
   public List<ClientCustomer> getCustomerByEmail(String email) {
     List<Customer> customerList = repository.getByEmail(email);
-    List<ClientCustomer> clientCustomerList;
     if (customerList.isEmpty()) {
       logger.error("No customer with email ", email);
       throw new CustomerNotFoundException("No customer with email " + email,
           "Please enter in an acceptable email");
     } else {
       logger.debug("Returing list of ClientCustomers with email ", email);
-      clientCustomerList =
-          customerList.stream().map(c -> new ClientCustomer(c.getName(), c.getEmail(),
-              c.getPhoneNumber(), c.getAddress(), c.getOwnedCars())).collect(Collectors.toList());
-      return clientCustomerList;
+      return getAClientCustomerList(customerList);
     }
   }
 
@@ -209,7 +196,7 @@ public class CustomerServiceImpl implements CustomerService {
   }
 
   /*
-   * Will delete from mongo database
+   * Will delete one record from Mongo database
    */
 
   @Override
@@ -231,6 +218,17 @@ public class CustomerServiceImpl implements CustomerService {
       logger.error("Customer could not be found with id {}", id);
       return new CustomerNotFoundException();
     });
+  }
+
+  @Override
+  public List<ClientCustomer> getAClientCustomerList(List<Customer> customerList) {
+
+    List<ClientCustomer> clientCustomerList;
+    clientCustomerList =
+        customerList.stream().map(c -> new ClientCustomer(c.getName(), c.getEmail(),
+            c.getPhoneNumber(), c.getAddress(), c.getOwnedCars())).collect(Collectors.toList());
+
+    return clientCustomerList;
   }
 
 

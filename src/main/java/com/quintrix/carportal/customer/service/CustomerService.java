@@ -13,7 +13,7 @@ public interface CustomerService {
 
   List<ClientCustomer> getAllCustomers();
 
-  List<ClientCustomer> getCustomers(String name);
+  <T> List<T> getCustomers(String name);
 
   Optional<Customer> getCustomerById(Long id);
 
@@ -30,4 +30,6 @@ public interface CustomerService {
   List<ClientCustomer> search(String name, String address, String phone, String email);
 
   List<ClientCustomer> getCustomerByEmail(String email);
+
+  List<ClientCustomer> getAClientCustomerList(List<Customer> customerList);
 }
