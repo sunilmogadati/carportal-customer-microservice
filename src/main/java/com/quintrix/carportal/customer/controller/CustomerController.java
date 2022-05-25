@@ -45,7 +45,7 @@ public class CustomerController {
       content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
           array = @ArraySchema(schema = @Schema(implementation = Customer.class))))
   @RequestMapping(method = RequestMethod.GET, value = "/customers")
-  List<Customer> getAllCustomers() {
+  List<ClientCustomer> getAllCustomers() {
 
     return customerService.getAllCustomers();
   }
