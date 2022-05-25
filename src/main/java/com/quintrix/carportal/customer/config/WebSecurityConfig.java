@@ -22,6 +22,7 @@ public class WebSecurityConfig {
     return provider;
   }
 
+
   // responsible for locking unauthorized users from accessing specific pages
   /*
    * @Bean public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

@@ -16,7 +16,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     CustomerUser user = userRepository.findByUsername(username);
     if (user == null) {
-      throw new UsernameNotFoundException("Invalid credentials");
+      throw new UsernameNotFoundException(username);
     }
 
     return new CustomUserDetails(user);
