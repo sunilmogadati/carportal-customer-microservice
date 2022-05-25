@@ -24,13 +24,25 @@ public class CustomerServiceImpl implements CustomerService {
 
 
   /*
-   * Returns list of all customers
+   * Returns list of all ClientCustomer without the id for security
    */
 
   @Override
-  public List<Customer> getAllCustomers() {
+  public List<ClientCustomer> getAllCustomers() {
     List<Customer> returnList;
-    returnList = repository.findAll();
+    List<ClientCustomer> clientCustomerList;
+    returnList = getAllCustomersAdmin();
+    clientCustomerList = returnList.stream().map(c -> new ClientCustomer(c.getName(), c.getEmail(),
+        c.getPhoneNumber(), c.getAddress(), c.getOwnedCars())).collect(Collectors.toList());
+    return clientCustomerList;
+  }
+
+  /*
+   * Returns a list of Customers from the database with the Id's for Admin's.
+   */
+  @Override
+  public List<Customer> getAllCustomersAdmin() {
+    List<Customer> returnList = repository.findAll();
     if (returnList.isEmpty()) {
       logger.error("Not able to find any customers in database");
       throw new CustomerNotFoundException("No customers in database",
@@ -77,6 +89,87 @@ public class CustomerServiceImpl implements CustomerService {
   public Optional<Customer> getCustomerById(Long id) {
     logger.debug("Returning customer by Id", id);
     return Optional.ofNullable(getCustomerByIdOrThrowCustomerNotFoundException(id));
+  }
+
+
+  /*
+   * Returns list of ClientCustomer by phone number
+   */
+  @Override
+  public List<ClientCustomer> getCustomerByPhoneNumber(String phone) {
+    List<Customer> customerList = repository.getByPhoneNumber(phone);
+    List<ClientCustomer> clientCustomerList;
+    if (customerList.isEmpty()) {
+      logger.error("No customer with Phone Number ", phone);
+      throw new CustomerNotFoundException("No customer with phone number " + phone,
+          "Please enter in an acceptable phone number");
+    } else {
+      logger.debug("Returning list of customers with phone number ", phone);
+      clientCustomerList =
+          customerList.stream().map(c -> new ClientCustomer(c.getName(), c.getEmail(),
+              c.getPhoneNumber(), c.getAddress(), c.getOwnedCars())).collect(Collectors.toList());
+      return clientCustomerList;
+    }
+  }
+
+  /*
+   * Returns a list of ClientCustomers by address
+   */
+
+  @Override
+  public List<ClientCustomer> getCustomerByAddress(String address) {
+    List<Customer> customerList = repository.getByAddress(address);
+    List<ClientCustomer> clientCustomerList;
+    if (customerList.isEmpty()) {
+      logger.error("No customer with address ", address);
+      throw new CustomerNotFoundException("No customer with address " + address,
+          "Please enter in an acceptable address");
+    } else {
+      logger.debug("Returing list of ClientCustomers with address ", address);
+      clientCustomerList =
+          customerList.stream().map(c -> new ClientCustomer(c.getName(), c.getEmail(),
+              c.getPhoneNumber(), c.getAddress(), c.getOwnedCars())).collect(Collectors.toList());
+      return clientCustomerList;
+    }
+  }
+
+  /*
+   * Returns customers by car id TODO
+   */
+  @Override
+  public List<ClientCustomer> getCustomerByCar(String id) {
+    return null;
+  }
+
+
+  /*
+   * Returns list of customerClients based on email
+   */
+  @Override
+  public List<ClientCustomer> getCustomerByEmail(String email) {
+    List<Customer> customerList = repository.getByEmail(email);
+    List<ClientCustomer> clientCustomerList;
+    if (customerList.isEmpty()) {
+      logger.error("No customer with email ", email);
+      throw new CustomerNotFoundException("No customer with email " + email,
+          "Please enter in an acceptable email");
+    } else {
+      logger.debug("Returing list of ClientCustomers with email ", email);
+      clientCustomerList =
+          customerList.stream().map(c -> new ClientCustomer(c.getName(), c.getEmail(),
+              c.getPhoneNumber(), c.getAddress(), c.getOwnedCars())).collect(Collectors.toList());
+      return clientCustomerList;
+    }
+  }
+
+  /*
+   * Returns list of customerClients based on multiple variables TODO
+   */
+
+  @Override
+  public List<ClientCustomer> search(String name, String address, String phone, String email) {
+
+    return null;
   }
 
   /*
