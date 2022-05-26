@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.quintrix.carportal.customer.dto.DeleteCustomerSuccessResponse;
-import com.quintrix.carportal.customer.entity.ClientCustomer;
 import com.quintrix.carportal.customer.entity.Customer;
 import com.quintrix.carportal.customer.service.CustomerService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -40,15 +39,18 @@ public class CustomerController {
   CustomerService customerService;
 
   /* #################### Retrieve all customers ###################### */
-  @Operation(summary = "Retrieve all existing customers.")
-  @ApiResponse(responseCode = "200",
-      content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-          array = @ArraySchema(schema = @Schema(implementation = Customer.class))))
-  @RequestMapping(method = RequestMethod.GET, value = "/customers")
-  List<ClientCustomer> getAllCustomers() {
-
-    return customerService.getAllCustomers();
-  }
+  /*
+   * @Operation(summary = "Retrieve all existing customers.")
+   * 
+   * @ApiResponse(responseCode = "200", content = @Content(mediaType =
+   * MediaType.APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation =
+   * Customer.class))))
+   * 
+   * @RequestMapping(method = RequestMethod.GET, value = "/customers/admin") List<Customer>
+   * getAllCustomers() {
+   * 
+   * return customerService.getAllCustomersAdmin(); }
+   */
 
   /* ################### Retrieve all customers by name ################# */
   @Operation(summary = "Retrieve all existing customers that have the given name.")
@@ -57,7 +59,7 @@ public class CustomerController {
           array = @ArraySchema(schema = @Schema(implementation = Customer.class))))
   // Retrieves complete customer information omitting the customer id.
   @RequestMapping(method = RequestMethod.GET, value = "/customer")
-  List<ClientCustomer> getCustomers(
+  <T> List<T> getCustomers(
       @Parameter(description = "The name to search for customers with") @RequestParam(name = "name",
           required = false) String name) {
 
@@ -103,7 +105,7 @@ public class CustomerController {
           content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = Customer.class))),
       @ApiResponse(responseCode = "404", content = @Content())})
-  @PutMapping("/customer/update")
+  @PutMapping("/customer")
   public Customer updateCustomerInformation(@io.swagger.v3.oas.annotations.parameters.RequestBody(
       description = "The customer's updated information") @RequestBody Customer customer) {
     logger.debug("Request: update information Customer {}", customer);
