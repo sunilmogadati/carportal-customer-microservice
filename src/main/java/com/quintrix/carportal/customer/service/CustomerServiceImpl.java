@@ -134,11 +134,25 @@ public class CustomerServiceImpl implements CustomerService {
   }
 
   /*
-   * Returns customers by car id TODO
+   * Returns customers by car id
    */
   @Override
   public List<ClientCustomer> getCustomerByCar(String id) {
-    return null;
+    List<Customer> customerList = repository.findAll();
+    List<ClientCustomer> clientCustomerList;
+    List<Customer> customerCarList = customerList.stream()
+        .filter(c -> c.getOwnedCars().contains(id)).collect(Collectors.toList());
+    if (customerCarList.isEmpty()) {
+      logger.error("No customer has a car id ", id);
+      throw new CustomerNotFoundException("No customer with car id " + id,
+          "Please enter in a car id that is valid.");
+    } else {
+      logger.debug("Returning List of customers with car id ", id);
+      clientCustomerList =
+          customerCarList.stream().map(c -> new ClientCustomer(c.getName(), c.getEmail(),
+              c.getPhoneNumber(), c.getAddress(), c.getOwnedCars())).collect(Collectors.toList());
+      return clientCustomerList;
+    }
   }
 
 
@@ -168,9 +182,54 @@ public class CustomerServiceImpl implements CustomerService {
 
   @Override
   public List<ClientCustomer> search(String name, String address, String phone, String email) {
-
+    Integer nameParam = 0;
+    Integer addressParam = 0;
+    Integer phoneParam = 0;
+    Integer emailParam = 0;
+    if (name != null) {
+      nameParam = 1;
+    }
+    if (address != null) {
+      addressParam = 1;
+    }
+    if (phone != null) {
+      phoneParam = 1;
+    }
+    if (email != null) {
+      emailParam = 1;
+    }
+    switch (nameParam + addressParam + phoneParam + emailParam) {
+      case 0:
+        logger.debug("No search paramaters returning list of all customers");
+        return getAllCustomers();
+      case 1:
+        if (nameParam == 1) {
+          logger.debug("Searching for name {}", name);
+          return getCustomers(name);
+        } else if (phoneParam == 1) {
+          logger.debug("Searching for phone number {}", phone);
+          return getCustomerByPhoneNumber(phone);
+        } else if (addressParam == 1) {
+          logger.debug("Searching for address {}", address);
+          return getCustomerByAddress(address);
+        } else if (emailParam == 1) {
+          logger.debug("Searching for email {}", email);
+          return getCustomerByEmail(email);
+        } else {
+          logger.error("Should not have reached this point");
+          throw new IllegalStateException();
+        }
+      case 2:
+        logger.debug("");
+        return null;
+      case 3:
+        return null;
+      case 4:
+        return null;
+    }
     return null;
   }
+
 
   /*
    * Adds a new customer entity.
