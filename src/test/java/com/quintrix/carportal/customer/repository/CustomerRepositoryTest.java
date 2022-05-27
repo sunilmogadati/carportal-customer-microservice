@@ -43,7 +43,7 @@ class CustomerRepositoryTest {
   @Test
   void getAllByNameShouldReturnAllCustomersWithGivenExactNameCaseInsensitive() {
     CustomerRepository customerRepositoryMock = Mockito.mock(CustomerRepository.class);
-	  List<Customer> customerList = new ArrayList<>();
+    List<Customer> customerList = new ArrayList<>();
     Customer customer = new Customer();
     customer.setName("Customer One");
 
@@ -82,7 +82,7 @@ class CustomerRepositoryTest {
   @Test
   void getAllByNameShouldSortAnyMatchesInAscendingOrderCaseInsensitive() {
     CustomerRepository customerRepositoryMock = Mockito.mock(CustomerRepository.class);
-	  List<Customer> customers = new ArrayList<>();
+    List<Customer> customers = new ArrayList<>();
     Customer customer1 = new Customer();
     customer1.setName("Customer");
     customers.add(customer1);
