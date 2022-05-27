@@ -130,6 +130,5 @@ class CustomerRepositoryTest {
     Assertions.assertThat(customer1.getId()).isPositive();
     Assertions.assertThat(customer1.getId()).isEqualTo(customer2.getId() - 1);
     Assertions.assertThat(customer2.getId()).isEqualTo(customer3.getId() - 1);
-
   }
 }
