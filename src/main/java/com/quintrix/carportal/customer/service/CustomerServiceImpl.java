@@ -1,5 +1,6 @@
 package com.quintrix.carportal.customer.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,7 +31,6 @@ public class CustomerServiceImpl implements CustomerService {
   @Override
   public List<ClientCustomer> getAllCustomers() {
     List<Customer> customerList;
-    List<ClientCustomer> clientCustomerList;
     customerList = getAllCustomersAdmin();
     return getAClientCustomerList(customerList);
   }
@@ -55,6 +55,7 @@ public class CustomerServiceImpl implements CustomerService {
    * Returns client customers by name
    */
 
+  @SuppressWarnings("unchecked")
   @Override
   public <T> List<T> getCustomers(String name) {
 
@@ -64,8 +65,6 @@ public class CustomerServiceImpl implements CustomerService {
 
       List<Customer> customerList;
       customerList = repository.getAllByName(name);
-
-      List<ClientCustomer> clientCustomerList = null;
 
       if (customerList.isEmpty()) {
         logger.error("Not able to find any customer with name ", name);
@@ -164,8 +163,9 @@ public class CustomerServiceImpl implements CustomerService {
   }
 
   /*
-   * Returns list of customerClients based on multiple variables TODO
+   * Returns list of customerClients based on multiple variables
    */
+
 
   @Override
   public List<ClientCustomer> search(String name, String address, String phone, String email) {
@@ -173,6 +173,7 @@ public class CustomerServiceImpl implements CustomerService {
     Integer addressParam = 0;
     Integer phoneParam = 0;
     Integer emailParam = 0;
+    List<ClientCustomer> returnList = new ArrayList<ClientCustomer>();
     if (name != null) {
       nameParam = 1;
     }
@@ -187,19 +188,24 @@ public class CustomerServiceImpl implements CustomerService {
     }
     switch (nameParam + addressParam + phoneParam + emailParam) {
       case 0:
+        // Searching for all customers because no parameters were entered
         logger.debug("No search paramaters returning list of all customers");
         return getAllCustomers();
       case 1:
         if (nameParam == 1) {
+          // Searching for all customers by specific name
           logger.debug("Searching for name {}", name);
           return getCustomers(name);
         } else if (phoneParam == 1) {
+          // Searching for all customers by phone number
           logger.debug("Searching for phone number {}", phone);
           return getCustomerByPhoneNumber(phone);
         } else if (addressParam == 1) {
+          // Searching for all customers by address
           logger.debug("Searching for address {}", address);
           return getCustomerByAddress(address);
         } else if (emailParam == 1) {
+          // Searching for all customers by email
           logger.debug("Searching for email {}", email);
           return getCustomerByEmail(email);
         } else {
@@ -207,14 +213,89 @@ public class CustomerServiceImpl implements CustomerService {
           throw new IllegalStateException();
         }
       case 2:
-        logger.debug("");
-        return null;
+        if (nameParam == 1 && phoneParam == 1) {
+          // Searching for all customers by specific name and phone number
+          logger.debug("Searching for name {} and phone number {}", name, phone);
+          returnList.addAll(getCustomers(name));
+          returnList.addAll(getCustomerByPhoneNumber(phone));
+          return returnList;
+        } else if (nameParam == 1 && addressParam == 1) {
+          // Searching for all customers by specific name and address
+          logger.debug("Searching for name {} and address {}", name, address);
+          returnList.addAll(getCustomers(name));
+          returnList.addAll(getCustomerByAddress(address));
+          return returnList;
+        } else if (nameParam == 1 && emailParam == 1) {
+          // Searching for all customers by specific name and email
+          logger.debug("Searching for name {} and email {}", name, email);
+          returnList.addAll(getCustomers(name));
+          returnList.addAll(getCustomerByEmail(email));
+          return returnList;
+        } else if (phoneParam == 1 && addressParam == 1) {
+          // Searching for all customers by phone number and address
+          logger.debug("Searching for phone {} and address {}", phone, address);
+          returnList.addAll(getCustomerByPhoneNumber(phone));
+          returnList.addAll(getCustomerByAddress(address));
+          return returnList;
+        } else if (phoneParam == 1 && emailParam == 1) {
+          // Searching for all customers by phone number and email
+          logger.debug("Searching for phone {} and email {}", phone, email);
+          returnList.addAll(getCustomerByPhoneNumber(phone));
+          returnList.addAll(getCustomerByEmail(email));
+          return returnList;
+        } else if (addressParam == 1 && emailParam == 1) {
+          // Searching for all customers by email and address
+          logger.debug("Searching for address {} and email {}", address, email);
+          returnList.addAll(getCustomerByAddress(address));
+          returnList.addAll(getCustomerByEmail(email));
+          return returnList;
+        } else {
+          logger.error("Should not have reached this point");
+          throw new IllegalStateException();
+        }
       case 3:
-        return null;
+        if (nameParam == 1 && phoneParam == 1 && addressParam == 1) {
+          // Searching for all customers by specific name and phone number and address
+          logger.debug("Searching for name {} and phone {} and address {}", name, phone, address);
+          returnList.addAll(getCustomers(name));
+          returnList.addAll(getCustomerByPhoneNumber(phone));
+          returnList.addAll(getCustomerByAddress(address));
+          return returnList;
+        } else if (nameParam == 1 && phoneParam == 1 && emailParam == 1) {
+          // Searching for all customers by specific name and phone number and email
+          logger.debug("Searching for name {} and phone {} and email {}", name, phone, email);
+          returnList.addAll(getCustomers(name));
+          returnList.addAll(getCustomerByPhoneNumber(phone));
+          returnList.addAll(getCustomerByEmail(email));
+          return returnList;
+        } else if (nameParam == 1 && emailParam == 1 && addressParam == 1) {
+          // Searching for all customers by specific name and address and email
+          logger.debug("Searching for name {} and email {} and address {}", name, email, address);
+          returnList.addAll(getCustomers(name));
+          returnList.addAll(getCustomerByEmail(email));
+          returnList.addAll(getCustomerByAddress(address));
+          return returnList;
+        } else if (phoneParam == 1 && emailParam == 1 && addressParam == 1) {
+          // Searching for all customers by email and phone number and address
+          logger.debug("Searching for phone {} and email {} and address {}", phone, email, address);
+          returnList.addAll(getCustomerByPhoneNumber(phone));
+          returnList.addAll(getCustomerByEmail(email));
+          returnList.addAll(getCustomerByAddress(address));
+          return returnList;
+        } else {
+          logger.debug("This section should not be reached");
+          throw new IllegalStateException();
+        }
       case 4:
-        return null;
+        // Searching for all customers by all search parameters
+        returnList.addAll(getCustomers(name));
+        returnList.addAll(getCustomerByPhoneNumber(phone));
+        returnList.addAll(getCustomerByEmail(email));
+        returnList.addAll(getCustomerByAddress(address));
+        return returnList;
     }
-    return null;
+    logger.error("Out of Switch statement sould not be here");
+    throw new IllegalStateException();
   }
 
 
