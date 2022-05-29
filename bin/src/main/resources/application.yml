@@ -3,7 +3,9 @@ spring:
     mongodb:
       uri: mongodb+srv://customeradmin:customerportal@cluster0.wbfea.mongodb.net/?retryWrites=true
       database: customer_test_quintrix
-  security:
-    user:
-      name: root
-      password: toor
+  datasource:
+    url: jdbc:mysql://localhost:3306/sql-security-login
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driv
+
