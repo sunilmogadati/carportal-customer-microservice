@@ -1,9 +1,0 @@
-Customer data Design:
-
-int ID
-string NAME
-string EMAIL
-string PASS
-int PHONE
-string STATUS
-string ADDRESS
