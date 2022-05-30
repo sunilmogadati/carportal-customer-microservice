@@ -118,22 +118,25 @@ class CustomerRepositoryTest {
   }
 
   //Still trying to get this to work with the mock
-  /*@Test
+  @Test
   void afterSaveCustomerIdShouldBePopulatedAndIncrementedByOne() {
     CustomerRepository customerRepositoryMock = Mockito.mock(CustomerRepository.class);
     Customer customer1 = new Customer();
     customer1.setName("Customer One");
+    customer1.setId(1L);
 
     Customer customer2 = new Customer();
     customer2.setName("Customer Two");
+    customer2.setId(2L);
 
     Customer customer3 = new Customer();
     customer3.setName("Customer Three");
+    customer3.setId(3L);
 
     customerRepository.saveAll(Arrays.asList(customer1, customer2, customer3));
 
     Assertions.assertThat(customer1.getId()).isPositive();
     Assertions.assertThat(customer1.getId()).isEqualTo(customer2.getId() - 1);
     Assertions.assertThat(customer2.getId()).isEqualTo(customer3.getId() - 1);
-  }*/
+  }
 }
