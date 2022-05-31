@@ -3,13 +3,9 @@ spring:
     mongodb:
       uri: mongodb+srv://customeradmin:customerportal@cluster0.wbfea.mongodb.net/?retryWrites=true
       database: customer_test_quintrix
-  security:
-    user:
-      name: root
-      password: toor
     oauth2:
       client:
         registration:
           google:
-            client-id: <ID HERE>
-            client-secret: <SECRET HERE>
+            client-id: <ID>
+            client-secret: <SECRET>

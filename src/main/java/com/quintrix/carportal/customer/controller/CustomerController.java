@@ -144,6 +144,12 @@ public class CustomerController {
    * 
    *
    */
+  @RequestMapping("/")
+  @ResponseBody
+  public String homeTest() {
+    return "Home page";
+  }
+
   @RequestMapping("/user")
   @ResponseBody
   public Principal user(Principal principal) {
