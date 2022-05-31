@@ -7,3 +7,9 @@ spring:
     user:
       name: root
       password: toor
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: <ID HERE>
+            client-secret: <SECRET HERE>
