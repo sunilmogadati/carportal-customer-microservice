@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
-
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -22,7 +21,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     return new BCryptPasswordEncoder();
   }
 
-
   // hardcoded user login
   @Override
   protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
@@ -32,23 +30,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .roles("ADMIN");
   }
 
-
   // configure authorize requests
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    // http.authorizeRequests().anyRequest().authenticated().and().oauth2Login();
 
-    http.cors().and().csrf().disable() // prevent cross-origin resource sharing and cross-site
-                                       // request forgery attacks
-        .authorizeRequests().antMatchers(HttpMethod.GET, "/customer/**").hasAnyRole("ADMIN", "USER")
-        .antMatchers(HttpMethod.POST, "/customer/**").hasAnyRole("ADMIN", "USER")
+    http.cors().and().csrf().disable().authorizeRequests()
+        .antMatchers(HttpMethod.GET, "/customer/**").hasAnyRole("ADMIN", "USER")
+        .antMatchers(HttpMethod.POST, "/customer/**").hasAnyRole("ADMIN")
         .antMatchers(HttpMethod.PUT, "/customer/**").hasRole("ADMIN")
-        .antMatchers(HttpMethod.DELETE, "/customer/**").hasRole("ADMIN").antMatchers("/")
-        .permitAll().anyRequest().authenticated().and() // set up form login
-        .formLogin();
-
-
+        .antMatchers(HttpMethod.DELETE, "/customer/**").hasRole("ADMIN")
+        .antMatchers("login", "/oauth/**").permitAll().anyRequest().authenticated().and()
+        .formLogin().permitAll().and().oauth2Login();
   }
-
-
 }
+
+
