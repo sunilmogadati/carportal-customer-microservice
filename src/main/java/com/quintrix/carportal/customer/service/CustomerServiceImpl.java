@@ -174,6 +174,7 @@ public class CustomerServiceImpl implements CustomerService {
     Integer phoneParam = 0;
     Integer emailParam = 0;
     List<ClientCustomer> returnList = new ArrayList<ClientCustomer>();
+    List<ClientCustomer> tempCustomer = new ArrayList<ClientCustomer>();
     if (name != null) {
       nameParam = 1;
     }
@@ -214,17 +215,24 @@ public class CustomerServiceImpl implements CustomerService {
         }
       case 2:
         if (nameParam == 1 && phoneParam == 1) {
-          // Searching for all customers by specific name and phone number
+          // Searching for all customers by specific name and phone number TODO add more try and
+          // catch and stream to get distinct objects
           logger.debug("Searching for name {} and phone number {}", name, phone);
           try {
-            returnList.addAll(getCustomers(name));
+            tempCustomer.addAll(getCustomers(name));
           } catch (CustomerNotFoundException e) {
             logger.debug("No customer with name {}", name);
           }
           try {
-            returnList.addAll(getCustomerByPhoneNumber(phone));
+            tempCustomer.addAll(getCustomerByPhoneNumber(phone));
           } catch (CustomerNotFoundException e) {
             logger.debug("No customer with phone {}", phone);
+          }
+          returnList = tempCustomer.stream().distinct().collect(Collectors.toList());
+          if (returnList == null) {
+            logger.error("No customer with name {} or phone number {}", name, phone);
+            throw new CustomerNotFoundException("Nothing to search",
+                "No customer with name or phone number entered please try again");
           }
           return returnList;
         } else if (nameParam == 1 && addressParam == 1) {
@@ -378,6 +386,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     return clientCustomerList;
   }
+
 
 
 }
