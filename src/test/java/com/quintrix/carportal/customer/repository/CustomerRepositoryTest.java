@@ -1,5 +1,6 @@
 package com.quintrix.carportal.customer.repository;
 
+
 import com.quintrix.carportal.customer.entity.Customer;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
@@ -11,6 +12,8 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import com.quintrix.carportal.customer.entity.Customer;
+import com.quintrix.carportal.customer.entity.DatabaseSequence;
 
 
 @SpringBootTest
@@ -74,6 +77,7 @@ class CustomerRepositoryTest {
     Customer customer5 = new Customer();
     customer5.setName("Customer a");
     customers.add(customer5);
+
 
     // should return all customers with name matching
     Assertions.assertThat(customers).hasSize(5);

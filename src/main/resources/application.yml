@@ -7,3 +7,9 @@ spring:
     user:
       name: root
       password: toor
+
+logging:
+  level:
+    root: ERROR
+    org.springframework.web: ERROR
+    com.quintrix: DEBUG
