@@ -13,8 +13,6 @@ import com.quintrix.carportal.customer.entity.Customer;
 import com.quintrix.carportal.customer.exception.CustomerNotFoundException;
 import com.quintrix.carportal.customer.repository.CustomerRepository;
 
-
-
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
@@ -23,7 +21,9 @@ public class CustomerServiceImpl implements CustomerService {
   @Autowired
   private CustomerRepository repository;
 
-
+  public CustomerServiceImpl(CustomerRepository customerRepository) {
+    this.repository = customerRepository;
+  }
   /*
    * Returns list of all ClientCustomer without the id for security
    */
