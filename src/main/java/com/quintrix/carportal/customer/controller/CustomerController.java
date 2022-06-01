@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.quintrix.carportal.customer.dto.DeleteCustomerSuccessResponse;
+import com.quintrix.carportal.customer.entity.ClientCustomer;
 import com.quintrix.carportal.customer.entity.Customer;
 import com.quintrix.carportal.customer.service.CustomerService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -54,19 +55,42 @@ public class CustomerController {
    * return customerService.getAllCustomersAdmin(); }
    */
 
+  /* #################### Retrieve all Cars from customers ###################### */
+  @Operation(summary = "Retrieve an existing customer given a Car id")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200",
+          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = Customer.class))),
+      @ApiResponse(responseCode = "404", content = @Content())})
+  @RequestMapping(method = RequestMethod.GET, value = "/customer/car/{id}")
+  public List<ClientCustomer> getCustomersByCar(@Parameter(
+      description = "The id of the car from the Car microservice") @PathVariable("id") String id) {
+    logger.debug("Finding a car with a particular car id {}", id);
+    return customerService.getCustomerByCar(id);
+  }
+
   /* ################### Retrieve all customers by name ################# */
-  @Operation(summary = "Retrieve all existing customers that have the given name.")
+  @Operation(
+      summary = "Retrieve all existing customers that have the given name,phone number, address, or email.")
   @ApiResponse(responseCode = "200",
       content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
           array = @ArraySchema(schema = @Schema(implementation = Customer.class))))
-  // Retrieves complete customer information omitting the customer id.
+  // Retrieves complete customer information omitting the customer id given 4 different parameters
   @RequestMapping(method = RequestMethod.GET, value = "/customer")
-  <T> List<T> getCustomers(
+  public <T> List<ClientCustomer> getCustomers(
       @Parameter(description = "The name to search for customers with") @RequestParam(name = "name",
-          required = false) String name) {
+          required = false) String name,
+      @Parameter(description = "The address to search for customers with") @RequestParam(
+          name = "address", required = false) String address,
+      @Parameter(description = "The phone number to search for customers with") @RequestParam(
+          name = "phone", required = false) String phone,
+      @Parameter(description = "The email to search for customers with") @RequestParam(
+          name = "email", required = false) String email) {
 
-    logger.debug("Request: Searrch records for name: {}", name);
-    return customerService.getCustomers(name);
+    logger.debug(
+        "Request: Searching for records with name {}, address {}, phone number {}, and email {}",
+        name, address, phone, email);
+    return customerService.search(name, address, phone, email);
   }
 
   /* ################### Retrieve a customer by id ####################### */

@@ -13,8 +13,6 @@ import com.quintrix.carportal.customer.entity.Customer;
 import com.quintrix.carportal.customer.exception.CustomerNotFoundException;
 import com.quintrix.carportal.customer.repository.CustomerRepository;
 
-
-
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
@@ -23,7 +21,9 @@ public class CustomerServiceImpl implements CustomerService {
   @Autowired
   private CustomerRepository repository;
 
-
+  public CustomerServiceImpl(CustomerRepository customerRepository) {
+    this.repository = customerRepository;
+  }
   /*
    * Returns list of all ClientCustomer without the id for security
    */
@@ -71,7 +71,7 @@ public class CustomerServiceImpl implements CustomerService {
         throw new CustomerNotFoundException("No customer with name " + name,
             "Please enter an acceptiable name for search");
       } else {
-        logger.debug("Retruning customer with name", name);
+        logger.debug("Retruning customer with name {}", name);
 
         return (List<T>) getAClientCustomerList(customerList);
       }
@@ -85,7 +85,7 @@ public class CustomerServiceImpl implements CustomerService {
 
   @Override
   public Optional<Customer> getCustomerById(Long id) {
-    logger.debug("Returning customer by Id", id);
+    logger.debug("Returning customer by Id {}", id);
     return Optional.ofNullable(getCustomerByIdOrThrowCustomerNotFoundException(id));
   }
 
@@ -97,11 +97,11 @@ public class CustomerServiceImpl implements CustomerService {
   public List<ClientCustomer> getCustomerByPhoneNumber(String phone) {
     List<Customer> customerList = repository.getByPhoneNumber(phone);
     if (customerList.isEmpty()) {
-      logger.error("No customer with Phone Number ", phone);
+      logger.error("No customer with Phone Number {}", phone);
       throw new CustomerNotFoundException("No customer with phone number " + phone,
           "Please enter in an acceptable phone number");
     } else {
-      logger.debug("Returning list of customers with phone number ", phone);
+      logger.debug("Returning list of customers with phone number {}", phone);
       return getAClientCustomerList(customerList);
     }
   }
@@ -114,11 +114,11 @@ public class CustomerServiceImpl implements CustomerService {
   public List<ClientCustomer> getCustomerByAddress(String address) {
     List<Customer> customerList = repository.getByAddress(address);
     if (customerList.isEmpty()) {
-      logger.error("No customer with address ", address);
+      logger.error("No customer with address {]", address);
       throw new CustomerNotFoundException("No customer with address " + address,
           "Please enter in an acceptable address");
     } else {
-      logger.debug("Returing list of ClientCustomers with address ", address);
+      logger.debug("Returing list of ClientCustomers with address {}", address);
       return getAClientCustomerList(customerList);
     }
   }
@@ -137,7 +137,7 @@ public class CustomerServiceImpl implements CustomerService {
       throw new CustomerNotFoundException("No customer with car id " + id,
           "Please enter in a car id that is valid.");
     } else {
-      logger.debug("Returning List of customers with car id ", id);
+      logger.debug("Returning List of customers with car id {}", id);
       clientCustomerList =
           customerCarList.stream().map(c -> new ClientCustomer(c.getName(), c.getEmail(),
               c.getPhoneNumber(), c.getAddress(), c.getOwnedCars())).collect(Collectors.toList());
@@ -153,7 +153,7 @@ public class CustomerServiceImpl implements CustomerService {
   public List<ClientCustomer> getCustomerByEmail(String email) {
     List<Customer> customerList = repository.getByEmail(email);
     if (customerList.isEmpty()) {
-      logger.error("No customer with email ", email);
+      logger.error("No customer with email {}", email);
       throw new CustomerNotFoundException("No customer with email " + email,
           "Please enter in an acceptable email");
     } else {
@@ -216,8 +216,16 @@ public class CustomerServiceImpl implements CustomerService {
         if (nameParam == 1 && phoneParam == 1) {
           // Searching for all customers by specific name and phone number
           logger.debug("Searching for name {} and phone number {}", name, phone);
-          returnList.addAll(getCustomers(name));
-          returnList.addAll(getCustomerByPhoneNumber(phone));
+          try {
+            returnList.addAll(getCustomers(name));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with name {}", name);
+          }
+          try {
+            returnList.addAll(getCustomerByPhoneNumber(phone));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with phone {}", phone);
+          }
           return returnList;
         } else if (nameParam == 1 && addressParam == 1) {
           // Searching for all customers by specific name and address
@@ -308,10 +316,10 @@ public class CustomerServiceImpl implements CustomerService {
     Long id = customer.getId();
     Customer newCustomer = repository.findById(id).orElse(null);
     if (newCustomer == null) {
-      logger.debug("Adding a new customer to the database", customer);
+      logger.debug("Adding a new customer to the database {}", customer);
       return repository.save(customer);
     } else {
-      logger.error("Id is already present", id);
+      logger.error("Id is already present {}", id);
       throw new CustomerNotFoundException("Id is alredy present",
           "If you need to update record use diffrent function");
     }
@@ -330,7 +338,7 @@ public class CustomerServiceImpl implements CustomerService {
       throw new CustomerNotFoundException("No customer with Id " + id,
           "Please enter in a customer in the database to update");
     } else {
-      logger.debug("Updating old customer", customer);
+      logger.debug("Updating old customer {}", customer);
       return repository.save(customer);
     }
   }
@@ -343,11 +351,11 @@ public class CustomerServiceImpl implements CustomerService {
   public String deleteCustomer(Long id) {
     Customer existingCustomer = repository.findById(id).orElse(null);
     if (existingCustomer == null) {
-      logger.error("No customer to delete with Id ", id);
+      logger.error("No customer to delete with Id {}", id);
       throw new CustomerNotFoundException("No customer with Id " + id,
           "Please enter in a valid ID");
     } else {
-      logger.debug("Deleting record with id", id);
+      logger.debug("Deleting record with id {}", id);
       repository.deleteById(id);
       return "deleted customer with " + id;
     }

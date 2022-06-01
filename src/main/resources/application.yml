@@ -10,3 +10,11 @@ spring:
           google:
             client-id: 
             client-secret: 
+    user:
+      name: root
+      password: toor
+logging:
+  level:
+    root: ERROR
+    org.springframework.web: ERROR
+    com.quintrix: DEBUG
