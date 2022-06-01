@@ -4,10 +4,15 @@ spring:
       uri: mongodb+srv://customeradmin:customerportal@cluster0.wbfea.mongodb.net/?retryWrites=true
       database: customer_test_quintrix
   security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 
+            client-secret: 
     user:
       name: root
       password: toor
-
 logging:
   level:
     root: ERROR
