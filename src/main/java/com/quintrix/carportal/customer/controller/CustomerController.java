@@ -168,12 +168,8 @@ public class CustomerController {
    * 
    *
    */
-  @RequestMapping("/")
-  @ResponseBody
-  public String homeTest() {
-    return "Home page";
-  }
 
+  // returns user authentication info
   @RequestMapping("/user")
   @ResponseBody
   public Principal user(Principal principal) {
