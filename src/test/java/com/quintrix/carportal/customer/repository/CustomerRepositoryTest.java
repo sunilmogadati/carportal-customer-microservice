@@ -1,7 +1,5 @@
 package com.quintrix.carportal.customer.repository;
 
-import com.quintrix.carportal.customer.entity.Customer;
-import com.quintrix.carportal.customer.entity.DatabaseSequence;
 import java.util.Arrays;
 import java.util.List;
 import org.assertj.core.api.Assertions;
@@ -14,8 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.test.context.ActiveProfiles;
+import com.quintrix.carportal.customer.entity.Customer;
+import com.quintrix.carportal.customer.entity.DatabaseSequence;
 
 
 @SpringBootTest
@@ -78,7 +77,8 @@ class CustomerRepositoryTest {
     Customer customer5 = new Customer();
     customer5.setName("Customer a");
 
-    customerRepository.saveAll(Arrays.asList(customer1, customer2, customer3, customer4, customer5));
+    customerRepository
+        .saveAll(Arrays.asList(customer1, customer2, customer3, customer4, customer5));
 
     List<Customer> customers = customerRepository.getAllByName("Customer");
 
