@@ -20,22 +20,6 @@ import com.quintrix.carportal.customer.repository.CustomerRepository;
 @ActiveProfiles("test")
 class CustomerTests {
 
-  @Autowired
-  private CustomerRepository customerRepository;
-  @Autowired
-  private MongoTemplate mongoTemplate;
-
-  @BeforeEach
-  void setUp() {
-    customerRepository.deleteAll();
-  }
-
-  @AfterAll
-  void cleanUpAll() {
-    customerRepository.deleteAll();
-    mongoTemplate.remove(new Query(), DatabaseSequence.class);
-  }
-
   @Test
   void testPopulateFields() {
     Customer customer = new Customer();
