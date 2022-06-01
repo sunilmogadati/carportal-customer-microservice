@@ -238,32 +238,102 @@ public class CustomerServiceImpl implements CustomerService {
         } else if (nameParam == 1 && addressParam == 1) {
           // Searching for all customers by specific name and address
           logger.debug("Searching for name {} and address {}", name, address);
-          returnList.addAll(getCustomers(name));
-          returnList.addAll(getCustomerByAddress(address));
+          try {
+            tempCustomer.addAll(getCustomers(name));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with Name ", name);
+          }
+          try {
+            tempCustomer.addAll(getCustomerByAddress(address));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with Address ", address);
+          }
+          returnList = tempCustomer.stream().distinct().collect(Collectors.toList());
+          if (returnList == null) {
+            logger.error("No customer with name {} or address {}", name, address);
+            throw new CustomerNotFoundException("Nothing to search",
+                "No customer with name or address entered please try again");
+          }
           return returnList;
         } else if (nameParam == 1 && emailParam == 1) {
           // Searching for all customers by specific name and email
           logger.debug("Searching for name {} and email {}", name, email);
-          returnList.addAll(getCustomers(name));
-          returnList.addAll(getCustomerByEmail(email));
+          try {
+            tempCustomer.addAll(getCustomers(name));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with name {}", name);
+          }
+          try {
+            tempCustomer.addAll(getCustomerByEmail(email));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with email {}", email);
+          }
+          returnList = tempCustomer.stream().distinct().collect(Collectors.toList());
+          if (returnList == null) {
+            logger.error("No customer with name {} or email {}", name, email);
+            throw new CustomerNotFoundException("Nothing to search",
+                "No customer with name or address entered please try again");
+          }
           return returnList;
         } else if (phoneParam == 1 && addressParam == 1) {
           // Searching for all customers by phone number and address
           logger.debug("Searching for phone {} and address {}", phone, address);
-          returnList.addAll(getCustomerByPhoneNumber(phone));
-          returnList.addAll(getCustomerByAddress(address));
+          try {
+            tempCustomer.addAll(getCustomerByPhoneNumber(phone));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with phone number {}", phone);
+          }
+          try {
+            tempCustomer.addAll(getCustomerByAddress(address));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with address {}", address);
+          }
+          returnList = tempCustomer.stream().distinct().collect(Collectors.toList());
+          if (returnList == null) {
+            logger.error("No customer with phone number {} or address {}", phone, address);
+            throw new CustomerNotFoundException("Nothing to search",
+                "No customer with phone number or address entered please try again");
+          }
           return returnList;
         } else if (phoneParam == 1 && emailParam == 1) {
           // Searching for all customers by phone number and email
           logger.debug("Searching for phone {} and email {}", phone, email);
-          returnList.addAll(getCustomerByPhoneNumber(phone));
-          returnList.addAll(getCustomerByEmail(email));
+          try {
+            tempCustomer.addAll(getCustomerByPhoneNumber(phone));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with phone number {}", phone);
+          }
+          try {
+            tempCustomer.addAll(getCustomerByEmail(email));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer wth email {}", email);
+          }
+          returnList = tempCustomer.stream().distinct().collect(Collectors.toList());
+          if (returnList == null) {
+            logger.error("No customer with phone number {} or email {}", phone, email);
+            throw new CustomerNotFoundException("Nothing to search",
+                "No customer with phone number or email entered please try again");
+          }
           return returnList;
         } else if (addressParam == 1 && emailParam == 1) {
           // Searching for all customers by email and address
           logger.debug("Searching for address {} and email {}", address, email);
-          returnList.addAll(getCustomerByAddress(address));
-          returnList.addAll(getCustomerByEmail(email));
+          try {
+            tempCustomer.addAll(getCustomerByAddress(address));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with address {}", address);
+          }
+          try {
+            tempCustomer.addAll(getCustomerByEmail(email));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with email {}", email);
+          }
+          returnList = tempCustomer.stream().distinct().collect(Collectors.toList());
+          if (returnList == null) {
+            logger.error("No customer with address {} or email {}", address, email);
+            throw new CustomerNotFoundException("Nothing to search",
+                "No customer with address or email entered please try again");
+          }
           return returnList;
         } else {
           logger.error("Should not have reached this point");
@@ -273,30 +343,106 @@ public class CustomerServiceImpl implements CustomerService {
         if (nameParam == 1 && phoneParam == 1 && addressParam == 1) {
           // Searching for all customers by specific name and phone number and address
           logger.debug("Searching for name {} and phone {} and address {}", name, phone, address);
-          returnList.addAll(getCustomers(name));
-          returnList.addAll(getCustomerByPhoneNumber(phone));
-          returnList.addAll(getCustomerByAddress(address));
+          try {
+            tempCustomer.addAll(getCustomers(name));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with name {}", name);
+          }
+          try {
+            tempCustomer.addAll(getCustomerByPhoneNumber(phone));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with phone number {}", phone);
+          }
+          try {
+            tempCustomer.addAll(getCustomerByAddress(address));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with address {}", address);
+          }
+          returnList = tempCustomer.stream().distinct().collect(Collectors.toList());
+          if (returnList == null) {
+            logger.error("No customer with name {} or phone number {} or address {}", name, phone,
+                address);
+            throw new CustomerNotFoundException("Nothing to search",
+                "No customer with name, phone number or address entered please try again");
+          }
           return returnList;
         } else if (nameParam == 1 && phoneParam == 1 && emailParam == 1) {
           // Searching for all customers by specific name and phone number and email
           logger.debug("Searching for name {} and phone {} and email {}", name, phone, email);
-          returnList.addAll(getCustomers(name));
-          returnList.addAll(getCustomerByPhoneNumber(phone));
-          returnList.addAll(getCustomerByEmail(email));
+          try {
+            tempCustomer.addAll(getCustomers(name));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with name {}", name);
+          }
+          try {
+            tempCustomer.addAll(getCustomerByPhoneNumber(phone));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with phone number {}", phone);
+          }
+          try {
+            tempCustomer.addAll(getCustomerByEmail(email));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with email", email);
+          }
+          returnList = tempCustomer.stream().distinct().collect(Collectors.toList());
+          if (returnList == null) {
+            logger.error("No customer with name {} or phone number {} or eamil {}", name, phone,
+                email);
+            throw new CustomerNotFoundException("Nothing to search",
+                "No customer with name, phone number or email entered please try again");
+          }
           return returnList;
         } else if (nameParam == 1 && emailParam == 1 && addressParam == 1) {
           // Searching for all customers by specific name and address and email
           logger.debug("Searching for name {} and email {} and address {}", name, email, address);
-          returnList.addAll(getCustomers(name));
-          returnList.addAll(getCustomerByEmail(email));
-          returnList.addAll(getCustomerByAddress(address));
+          try {
+            tempCustomer.addAll(getCustomers(name));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with name {}", name);
+          }
+          try {
+            tempCustomer.addAll(getCustomerByEmail(email));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No Customer with email {}", email);
+          }
+          try {
+            tempCustomer.addAll(getCustomerByAddress(address));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with address {}", address);
+          }
+          returnList = tempCustomer.stream().distinct().collect(Collectors.toList());
+          if (returnList == null) {
+            logger.error("No customer with name {} or email {} or address {}", name, email,
+                address);
+            throw new CustomerNotFoundException("Nothing to search",
+                "No customer with name, email or address entered please try again");
+          }
           return returnList;
         } else if (phoneParam == 1 && emailParam == 1 && addressParam == 1) {
           // Searching for all customers by email and phone number and address
           logger.debug("Searching for phone {} and email {} and address {}", phone, email, address);
-          returnList.addAll(getCustomerByPhoneNumber(phone));
-          returnList.addAll(getCustomerByEmail(email));
-          returnList.addAll(getCustomerByAddress(address));
+          try {
+            tempCustomer.addAll(getCustomerByPhoneNumber(phone));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with phone number {}", phone);
+          }
+          try {
+            tempCustomer.addAll(getCustomerByEmail(email));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with email {}", email);
+          }
+          try {
+            tempCustomer.addAll(getCustomerByAddress(address));
+          } catch (CustomerNotFoundException e) {
+            logger.debug("No customer with address {}", address);
+          }
+          returnList = tempCustomer.stream().distinct().collect(Collectors.toList());
+          if (returnList == null) {
+            logger.error("No customer with phone number {} or email {} or address {}", phone, email,
+                address);
+            throw new CustomerNotFoundException("Nothing to search",
+                "No customer with phone number, email or address entered please try again");
+          }
           return returnList;
         } else {
           logger.debug("This section should not be reached");
@@ -304,10 +450,33 @@ public class CustomerServiceImpl implements CustomerService {
         }
       case 4:
         // Searching for all customers by all search parameters
-        returnList.addAll(getCustomers(name));
-        returnList.addAll(getCustomerByPhoneNumber(phone));
-        returnList.addAll(getCustomerByEmail(email));
-        returnList.addAll(getCustomerByAddress(address));
+        try {
+          tempCustomer.addAll(getCustomers(name));
+        } catch (CustomerNotFoundException e) {
+          logger.debug("No customer with name {}", name);
+        }
+        try {
+          tempCustomer.addAll(getCustomerByPhoneNumber(phone));
+        } catch (CustomerNotFoundException e) {
+          logger.debug("No customer the phone number {}", phone);
+        }
+        try {
+          tempCustomer.addAll(getCustomerByEmail(email));
+        } catch (CustomerNotFoundException e) {
+          logger.debug("No customer with email {}", email);
+        }
+        try {
+          tempCustomer.addAll(getCustomerByAddress(address));
+        } catch (CustomerNotFoundException e) {
+          logger.debug("No customer with address {}", address);
+        }
+        returnList = tempCustomer.stream().distinct().collect(Collectors.toList());
+        if (returnList == null) {
+          logger.error("No customer with name{}, phone number {} , email {} or address {}", name,
+              phone, email, address);
+          throw new CustomerNotFoundException("Nothing to search",
+              "No customer with name, phone number, email or address entered please try again");
+        }
         return returnList;
     }
     logger.error("Out of Switch statement sould not be here");
