@@ -1,6 +1,7 @@
 package com.quintrix.carportal.customer.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import com.quintrix.carportal.customer.entity.ClientCustomer;
 import com.quintrix.carportal.customer.entity.Customer;
@@ -11,25 +12,30 @@ public interface CustomerService {
 
   String deleteCustomer(Long id);
 
-  List<ClientCustomer> getAllCustomers();
+  List<ClientCustomer> getAllCustomers(int offSet, int pageSize);
 
-  <T> List<T> getCustomers(String name);
+  List<ClientCustomer> getCustomers(String name, int offSet, int pageSize);
 
   Optional<Customer> getCustomerById(Long id);
 
   Customer addCustomer(Customer customer);
 
-  List<Customer> getAllCustomersAdmin();
+  List<Customer> getAllCustomersAdmin(int offSet, int pageSize);
 
-  List<ClientCustomer> getCustomerByPhoneNumber(String phone);
+  List<ClientCustomer> getCustomerByPhoneNumber(String phone, int offSet, int pageSize);
 
-  List<ClientCustomer> getCustomerByAddress(String address);
+  List<ClientCustomer> getCustomerByAddress(String address, int offSet, int pageSize);
 
   List<ClientCustomer> getCustomerByCar(String id);
 
-  List<ClientCustomer> search(String name, String address, String phone, String email);
+  Map<String, Object> search(String name, String address, String phone, String email, int offSet,
+      int pageSize);
 
-  List<ClientCustomer> getCustomerByEmail(String email);
+  List<ClientCustomer> getCustomerByEmail(String email, int offSet, int pageSize);
 
   List<ClientCustomer> getAClientCustomerList(List<Customer> customerList);
+
+  Map<String, Object> getResponse(List<ClientCustomer> clientCustomerList, int offSet,
+      int pageSize);
+
 }

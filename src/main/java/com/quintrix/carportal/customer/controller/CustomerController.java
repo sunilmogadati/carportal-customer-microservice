@@ -1,11 +1,15 @@
 package com.quintrix.carportal.customer.controller;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.quintrix.carportal.customer.dto.DeleteCustomerSuccessResponse;
+import com.quintrix.carportal.customer.entity.ClientCustomer;
 import com.quintrix.carportal.customer.entity.Customer;
 import com.quintrix.carportal.customer.service.CustomerService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -38,6 +44,7 @@ public class CustomerController {
   @Autowired
   CustomerService customerService;
 
+
   /* #################### Retrieve all customers ###################### */
   /*
    * @Operation(summary = "Retrieve all existing customers.")
@@ -52,19 +59,54 @@ public class CustomerController {
    * return customerService.getAllCustomersAdmin(); }
    */
 
+  /* #################### Retrieve all Cars from customers ###################### */
+  @Operation(summary = "Retrieve an existing customer given a Car id")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200",
+          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = Customer.class))),
+      @ApiResponse(responseCode = "404", content = @Content())})
+  @RequestMapping(method = RequestMethod.GET, value = "/customer/car/{id}")
+  public List<ClientCustomer> getCustomersByCar(@Parameter(
+      description = "The id of the car from the Car microservice") @PathVariable("id") String id) {
+    logger.debug("Finding a car with a particular car id {}", id);
+    return customerService.getCustomerByCar(id);
+  }
+
   /* ################### Retrieve all customers by name ################# */
-  @Operation(summary = "Retrieve all existing customers that have the given name.")
+  @Operation(
+      summary = "Retrieve all existing customers that have the given name,phone number, address, or email.")
   @ApiResponse(responseCode = "200",
       content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
           array = @ArraySchema(schema = @Schema(implementation = Customer.class))))
-  // Retrieves complete customer information omitting the customer id.
-  @RequestMapping(method = RequestMethod.GET, value = "/customer")
-  <T> List<T> getCustomers(
-      @Parameter(description = "The name to search for customers with") @RequestParam(name = "name",
-          required = false) String name) {
+  // Retrieves complete customer information omitting the customer id given 4 different parameters
 
-    logger.debug("Request: Searrch records for name: {}", name);
-    return customerService.getCustomers(name);
+  @RequestMapping(method = RequestMethod.GET, value = "/customer")
+  public ResponseEntity<Map<String, Object>> getCustomers(
+      @Parameter(description = "The starting page") @RequestParam(name = "offSet",
+          required = true) Integer offSet,
+      @Parameter(description = "The number of search results on a page") @RequestParam(
+          name = "pageSize", required = true) Integer pageSize,
+      @Parameter(description = "The name to search for customers with") @RequestParam(name = "name",
+          required = false) String name,
+      @Parameter(description = "The address to search for customers with") @RequestParam(
+          name = "address", required = false) String address,
+      @Parameter(description = "The phone number to search for customers with") @RequestParam(
+          name = "phone", required = false) String phone,
+      @Parameter(description = "The email to search for customers with") @RequestParam(
+          name = "email", required = false) String email) {
+
+    logger.debug(
+        "Request: Searching for records with name {}, address {}, phone number {}, and email {}",
+        name, address, phone, email);
+
+    Map<String, Object> response =
+        customerService.search(name, address, phone, email, offSet, pageSize);
+    try {
+      return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   /* ################### Retrieve a customer by id ####################### */
@@ -135,5 +177,19 @@ public class CustomerController {
     this.customerService = customerService;
   }
 
+
+  /*
+   * 
+   * TEST API: shows information of current authorized user
+   * 
+   *
+   */
+
+  // returns user authentication info
+  @RequestMapping("/user")
+  @ResponseBody
+  public Principal user(Principal principal) {
+    return principal;
+  }
 
 }
